@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dev Memory Assistant</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>🧠 Dev Memory Assistant</h1>
+      <p class="subtitle">Never lose context on your coding sessions again</p>
+
+      <div class="card">
+        <h2>Log a Session</h2>
+        <textarea
+          id="sessionText"
+          rows="5"
+          placeholder="What did you work on? e.g. Fixed null pointer bug in auth.js, used GPT to generate the regex, still need to handle edge case for empty strings..."
+        >
+        </textarea>
+        <input
+          type="text"
+          id="datasetName"
+          placeholder="Project name (e.g. my-app)"
+        />
+        <button onclick="rememberSession()">💾 Save to Memory</button>
+        <p id="rememberStatus" class="status"></p>
+      </div>
+
+      <div class="card">
+        <h2>Ask Your Memory</h2>
+        <input
+          type="text"
+          id="question"
+          placeholder="e.g. What was I working on in my-app?"
+        />
+        <button onclick="recallMemory()">🔍 Recall</button>
+        <div id="recallResults" class="results"></div>
+      </div>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

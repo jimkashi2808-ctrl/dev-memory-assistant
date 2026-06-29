@@ -1,0 +1,6 @@
+node_modules/
+.env
+cognee-server/venv/
+__pycache__/
+*.pyc
+.cognee_system/
