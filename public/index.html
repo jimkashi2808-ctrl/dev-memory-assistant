@@ -1,44 +1,118 @@
-<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dev Memory Assistant</title>
+    <title>Lemon — Project Memory Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div class="container">
-      <h1>🧠 Dev Memory Assistant</h1>
-      <p class="subtitle">Never lose context on your coding sessions again</p>
+    <div class="bg-glow"></div>
 
-      <div class="card">
-        <h2>Log a Session</h2>
-        <textarea
-          id="sessionText"
-          rows="5"
-          placeholder="What did you work on? e.g. Fixed null pointer bug in auth.js, used GPT to generate the regex, still need to handle edge case for empty strings..."
-        >
-        </textarea>
-        <input
-          type="text"
-          id="datasetName"
-          placeholder="Project name (e.g. my-app)"
-        />
-        <button onclick="rememberSession()">💾 Save to Memory</button>
-        <p id="rememberStatus" class="status"></p>
+    <header class="topbar">
+      <div class="logo">
+        <span class="logo-dot">🍋</span>
+        <span class="logo-text">Lemon<span class="dot">.</span></span>
       </div>
+      <nav class="nav">
+        <a href="#" class="nav-link active">Overview</a>
+        <a href="#" class="nav-link">Analytics</a>
+        <a href="#" class="nav-link">Project Logs</a>
+        <a href="#" class="nav-link">Bugs</a>
+        <a href="#" class="nav-link">Insights</a>
+      </nav>
+      <div class="topbar-right">
+        <button class="icon-btn" aria-label="Notifications">🔔</button>
+        <div class="avatar">D</div>
+      </div>
+    </header>
 
-      <div class="card">
-        <h2>Ask Your Memory</h2>
-        <input
-          type="text"
-          id="question"
-          placeholder="e.g. What was I working on in my-app?"
-        />
-        <button onclick="recallMemory()">🔍 Recall</button>
-        <div id="recallResults" class="results"></div>
-      </div>
-    </div>
+    <main class="page">
+      <section class="search-row">
+        <div class="search-bar">
+          <span class="search-prefix">lemon.dev/analyze/</span>
+          <input
+            id="repoInput"
+            type="text"
+            placeholder="paste-your-github-repo-url-here"
+          />
+          <button id="analyzeBtn" class="analyze-btn">Analyze</button>
+        </div>
+      </section>
+
+      <section class="overview-grid">
+        <div class="card project-card">
+          <div class="project-head">
+            <div class="project-icon">🍋</div>
+            <div>
+              <h2 id="projectName">Your Project</h2>
+              <p class="muted">Paste a repo link above to load memory</p>
+            </div>
+          </div>
+          <div class="project-meta">
+            <span id="launchDate">Launched: —</span>
+            <span id="lastBuild">Last build: —</span>
+          </div>
+          <div class="stat-row">
+            <div class="stat">
+              <div class="stat-value" id="statCommits">0</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="statBugs">0</div>
+              <div class="stat-label">Bugs Fixed</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="statModules">0</div>
+              <div class="stat-label">Files Touched</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="statPrompts">0</div>
+              <div class="stat-label">AI Prompts Used</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bugs-card">
+          <h3>Bugs &amp; Issues Resolved</h3>
+          <p class="muted small">Pulled from session memory</p>
+          <div class="bug-list" id="bugList">
+            <div class="bug-row empty">No memory loaded yet</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="overview-grid second-row">
+        <div class="card timeline-card">
+          <h3>Session Timeline</h3>
+          <p class="muted small">What you worked on, in order</p>
+          <svg
+            id="timelineSvg"
+            viewBox="0 0 900 220"
+            preserveAspectRatio="none"
+          >
+            <path
+              id="timelinePath"
+              d="M 20 150 Q 200 60 450 110 T 880 90"
+            ></path>
+          </svg>
+          <div class="timeline-points" id="timelinePoints"></div>
+        </div>
+
+        <div class="card prompts-card">
+          <h3>AI Prompts Used</h3>
+          <p class="muted small">Reasoning behind your fixes</p>
+          <div class="prompt-graph" id="promptGraph">
+            <div class="graph-center">🍋</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
     <script src="js/app.js"></script>
   </body>
 </html>
