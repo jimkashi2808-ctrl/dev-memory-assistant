@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lemon — Bugs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .page-title {
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+      }
+      .bug-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .bug-stat-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .bug-stat-icon {
+        font-size: 1.8rem;
+      }
+      .bug-stat-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+      .bug-stat-value {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 700;
+      }
+      .bug-stat-value.red {
+        color: #ff4444;
+      }
+      .bug-stat-value.green {
+        color: var(--green);
+      }
+      .bottom-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .table-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .table-header h3 {
+        font-family: var(--font-display);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--gold);
+      }
+      .sort-btn {
+        background: #1a2035;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        padding: 0.8rem 1rem;
+        text-align: left;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid var(--border);
+        font-weight: 500;
+      }
+      td {
+        padding: 0.9rem 1rem;
+        font-size: 0.82rem;
+        border-bottom: 1px solid #1a2035;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: #0d1322;
+      }
+      .incident-id {
+        font-family: var(--font-mono);
+        color: var(--gold);
+        font-weight: 600;
+      }
+      .context-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        background: #1a2035;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+      }
+      .arrow {
+        color: var(--text-dim);
+      }
+      .file-ref {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--teal);
+      }
+      .severity-badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .sev-critical {
+        background: #ff444433;
+        color: #ff4444;
+      }
+      .sev-high {
+        background: #f4b94233;
+        color: var(--gold);
+      }
+      .sev-medium {
+        background: #4ade8033;
+        color: var(--green);
+      }
+      .portfolio-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+      .portfolio-card h3 {
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      .donut-wrap {
+        display: flex;
+        justify-content: center;
+        margin: 1.5rem 0;
+      }
+      .legend {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .heatmap-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+      }
+      .heatmap-card h3 {
+        font-family: var(--font-display);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      .heatmap-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 3px;
+        margin-top: 1rem;
+      }
+      .heatmap-cell {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-glow"></div>
+    <header class="topbar">
+      <div class="logo">
+        <span class="logo-dot">🍋</span>
+        <span class="logo-text">Lemon<span class="dot">.</span></span>
+      </div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Overview</a>
+        <a href="#" class="nav-link">Analytics</a>
+        <a href="logs.html" class="nav-link">Project Logs</a>
+        <a href="bugs.html" class="nav-link active">Bugs</a>
+        <a href="#" class="nav-link">Insights</a>
+      </nav>
+      <div class="topbar-right">
+        <button class="icon-btn">🔔</button>
+        <div class="avatar">D</div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h2 class="page-title">
+        Advanced Bug Mitigation &amp; Project Health Center
+      </h2>
+
+      <div class="bug-stats">
+        <div class="bug-stat-box" style="border-color: #ff444444">
+          <div class="bug-stat-icon">🔴</div>
+          <div>
+            <div class="bug-stat-label">Critical Bugs Open</div>
+            <div class="bug-stat-value red" id="criticalCount">5</div>
+          </div>
+        </div>
+        <div class="bug-stat-box" style="border-color: #4ade8044">
+          <div class="bug-stat-icon">✅</div>
+          <div>
+            <div class="bug-stat-label">Bugs Resolved</div>
+            <div class="bug-stat-value green" id="resolvedCount">78</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Issue Matrix</h3>
+          <button class="sort-btn">⇅ Sort All</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Incident ID</th>
+              <th>Project Context</th>
+              <th>Problem Source</th>
+              <th>Impact Area</th>
+              <th>Fix Details</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="bugTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="bottom-grid">
+        <div>
+          <div class="portfolio-card">
+            <h3>Project Status &amp; Portfolio Breakdown</h3>
+            <p class="muted small">Live bug distribution</p>
+            <div class="donut-wrap">
+              <svg viewBox="0 0 120 120" width="160" height="160">
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="45"
+                  fill="none"
+                  stroke="#1a2035"
+                  stroke-width="18"
+                />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="45"
+                  fill="none"
+                  stroke="var(--gold)"
+                  stroke-width="18"
+                  stroke-dasharray="85 197"
+                  stroke-dashoffset="0"
+                  transform="rotate(-90 60 60)"
+                />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="45"
+                  fill="none"
+                  stroke="var(--green)"
+                  stroke-width="18"
+                  stroke-dasharray="70 197"
+                  stroke-dashoffset="-85"
+                  transform="rotate(-90 60 60)"
+                />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="45"
+                  fill="none"
+                  stroke="var(--blue)"
+                  stroke-width="18"
+                  stroke-dasharray="42 197"
+                  stroke-dashoffset="-155"
+                  transform="rotate(-90 60 60)"
+                />
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background: var(--gold)"></div>
+                In Progress
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: var(--green)"></div>
+                Completed
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background: var(--blue)"></div>
+                Planned
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="heatmap-card">
+            <h3>Activity Heatmap</h3>
+            <p class="muted small">Overall bug fix activity</p>
+            <div class="heatmap-grid" id="heatmapGrid"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const bugs = [
+        {
+          id: "#BUG-713",
+          context: "backend → E-commerce API",
+          source: "user_auth.py line 142",
+          impact: "Auth service bottleneck",
+          fix: "Implemented N+1 query fix, reducing latency by 35%",
+          status: "critical",
+        },
+        {
+          id: "#BUG-901",
+          context: "backend → Lemon AI Model",
+          source: "user_auth.py line 142",
+          impact: "Model response delay",
+          fix: "Implemented N+1 query fix, reducing latency by 35%",
+          status: "high",
+        },
+        {
+          id: "#BUG-714",
+          context: "backend → User Auth Module",
+          source: "user_auth.py line 142",
+          impact: "Login failures",
+          fix: "JWT expiry increased to 7 days",
+          status: "medium",
+        },
+        {
+          id: "#BUG-716",
+          context: "backend → Client Portal",
+          source: "user_auth.py line 142",
+          impact: "Dashboard load time",
+          fix: "Lazy loading implemented",
+          status: "medium",
+        },
+        {
+          id: "#BUG-717",
+          context: "backend → Data Pipeline",
+          source: "pipeline.py line 89",
+          impact: "Data sync delays",
+          fix: "Batch processing optimized",
+          status: "medium",
+        },
+        {
+          id: "#BUG-718",
+          context: "frontend → Lemon UI",
+          source: "style.css line 45",
+          impact: "Layout breaking on mobile",
+          fix: "Responsive grid fixed",
+          status: "medium",
+        },
+      ];
+
+      function renderBugs() {
+        const tbody = document.getElementById("bugTableBody");
+        tbody.innerHTML = bugs
+          .map(
+            (b) => `
+    <tr>
+      <td class="incident-id">${b.id}</td>
+      <td><span class="context-badge">${b.context}</span></td>
+      <td class="file-ref">${b.source}</td>
+      <td style="color:var(--text-muted);font-size:0.8rem">${b.impact}</td>
+      <td style="color:var(--text-secondary);font-size:0.8rem;max-width:200px">${b.fix}</td>
+      <td><span class="severity-badge sev-${b.status}">${severityLabel(b.status)}</span></td>
+    </tr>
+  `,
+          )
+          .join("");
+      }
+
+      function severityLabel(s) {
+        return (
+          {
+            critical: "CRITICAL FIXED",
+            high: "HIGH IN PROGRESS",
+            medium: "MEDIUM RESOLVED",
+          }[s] || s
+        );
+      }
+
+      // Generate heatmap
+      function renderHeatmap() {
+        const grid = document.getElementById("heatmapGrid");
+        const colors = [
+          "#1a2035",
+          "#f4b94222",
+          "#f4b94255",
+          "#f4b94288",
+          "#f4b942",
+        ];
+        grid.innerHTML = Array.from({ length: 70 }, () => {
+          const intensity = Math.floor(Math.random() * 5);
+          return `<div class="heatmap-cell" style="background:${colors[intensity]}"></div>`;
+        }).join("");
+      }
+
+      renderBugs();
+      renderHeatmap();
+    </script>
+  </body>
+</html>

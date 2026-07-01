@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lemon — Project Logs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .page-title {
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        color: var(--text);
+      }
+      .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .stat-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+      }
+      .stat-box-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 0.3rem;
+      }
+      .stat-box-value {
+        font-family: var(--font-display);
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+      .stat-box-value.gold {
+        color: var(--gold);
+      }
+      .stat-box-value.green {
+        color: var(--green);
+      }
+      .stat-box-value.orange {
+        color: var(--orange);
+      }
+      .stat-box-value.blue {
+        color: var(--blue);
+      }
+      .table-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .table-header h3 {
+        font-family: var(--font-display);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--gold);
+      }
+      .sort-btn {
+        background: #1a2035;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        padding: 0.8rem 1.2rem;
+        text-align: left;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid var(--border);
+        font-weight: 500;
+        cursor: pointer;
+      }
+      th:hover {
+        color: var(--text-muted);
+      }
+      td {
+        padding: 1rem 1.2rem;
+        font-size: 0.85rem;
+        border-bottom: 1px solid #1a2035;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: #0d1322;
+      }
+      .project-name {
+        font-weight: 500;
+        color: var(--text);
+      }
+      .type-badge {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 6px;
+        font-family: var(--font-mono);
+      }
+      .type-backend {
+        background: #5b8cff22;
+        color: var(--blue);
+      }
+      .type-frontend {
+        background: #f4b94222;
+        color: var(--gold);
+      }
+      .type-internal {
+        background: #22d3c822;
+        color: var(--teal);
+      }
+      .status-badge {
+        font-size: 0.72rem;
+        padding: 0.25rem 0.7rem;
+        border-radius: 6px;
+        font-weight: 600;
+      }
+      .status-progress {
+        background: #5b8cff22;
+        color: var(--blue);
+      }
+      .status-completed {
+        background: #4ade8022;
+        color: var(--green);
+      }
+      .status-hold {
+        background: #f4b94222;
+        color: var(--gold);
+      }
+      .status-planned {
+        background: #4d587322;
+        color: var(--text-dim);
+      }
+      .link-btn {
+        color: var(--gold);
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-family: var(--font-mono);
+      }
+      .link-btn:hover {
+        text-decoration: underline;
+      }
+      .activity-text {
+        color: var(--text-muted);
+        font-size: 0.82rem;
+        max-width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-glow"></div>
+    <header class="topbar">
+      <div class="logo">
+        <span class="logo-dot">🍋</span>
+        <span class="logo-text">Lemon<span class="dot">.</span></span>
+      </div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Overview</a>
+        <a href="#" class="nav-link">Analytics</a>
+        <a href="logs.html" class="nav-link active">Project Logs</a>
+        <a href="bugs.html" class="nav-link">Bugs</a>
+        <a href="#" class="nav-link">Insights</a>
+      </nav>
+      <div class="topbar-right">
+        <button class="icon-btn">🔔</button>
+        <div class="avatar">D</div>
+      </div>
+    </header>
+
+    <main class="page">
+      <h2 class="page-title">Comprehensive Project Log Repository</h2>
+
+      <div class="stats-bar">
+        <div class="stat-box">
+          <div class="stat-box-label">Total Projects</div>
+          <div class="stat-box-value gold" id="totalProjects">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Active</div>
+          <div class="stat-box-value green" id="activeProjects">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">On Hold</div>
+          <div class="stat-box-value orange" id="holdProjects">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Completed</div>
+          <div class="stat-box-value blue" id="completedProjects">0</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Sortable List &amp; Grid View of All Projects</h3>
+          <button class="sort-btn" onclick="sortTable()">⇅ Sort All</button>
+        </div>
+        <table id="projectTable">
+          <thead>
+            <tr>
+              <th onclick="sortBy('name')">Project Name ↕</th>
+              <th onclick="sortBy('type')">Type ↕</th>
+              <th onclick="sortBy('date')">Start Date ↕</th>
+              <th onclick="sortBy('status')">Status ↕</th>
+              <th>Latest Activity</th>
+              <th onclick="sortBy('contributors')">Contributors ↕</th>
+              <th>Resource Link</th>
+            </tr>
+          </thead>
+          <tbody id="projectTableBody">
+            <tr>
+              <td
+                colspan="7"
+                style="
+                  text-align: center;
+                  color: var(--text-dim);
+                  padding: 2rem;
+                "
+              >
+                Loading project logs...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <script>
+      // Sample data — in production this comes from your Cognee memory
+      const projects = [
+        {
+          name: "dev-memory-assistant",
+          type: "backend",
+          date: "Jun 29, 2026",
+          status: "progress",
+          activity: "Switched to Ollama free AI, GitHub URL analysis working",
+          contributors: 1,
+          link: "https://github.com/jimkashi2808-ctrl/dev-memory-assistant",
+        },
+        {
+          name: "Lemon Dashboard UI",
+          type: "frontend",
+          date: "Jun 30, 2026",
+          status: "progress",
+          activity: "Dark theme dashboard with gold accents deployed",
+          contributors: 1,
+          link: "#",
+        },
+        {
+          name: "Cognee Integration",
+          type: "internal",
+          date: "Jun 29, 2026",
+          status: "completed",
+          activity: "Memory save and recall fully working",
+          contributors: 1,
+          link: "#",
+        },
+        {
+          name: "GitHub API Bridge",
+          type: "backend",
+          date: "Jul 01, 2026",
+          status: "completed",
+          activity: "Real repo data fetching working",
+          contributors: 1,
+          link: "#",
+        },
+        {
+          name: "Ollama Local AI",
+          type: "internal",
+          date: "Jun 30, 2026",
+          status: "completed",
+          activity: "llama3.2 + nomic-embed-text running locally",
+          contributors: 1,
+          link: "#",
+        },
+        {
+          name: "Bug Tracker Page",
+          type: "frontend",
+          date: "Jul 01, 2026",
+          status: "progress",
+          activity: "Issue matrix being built",
+          contributors: 1,
+          link: "bugs.html",
+        },
+      ];
+
+      function renderTable(data) {
+        const tbody = document.getElementById("projectTableBody");
+        tbody.innerHTML = data
+          .map(
+            (p) => `
+    <tr>
+      <td class="project-name">${p.name}</td>
+      <td><span class="type-badge type-${p.type}">${p.type}</span></td>
+      <td style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.8rem">${p.date}</td>
+      <td><span class="status-badge status-${p.status}">${statusLabel(p.status)}</span></td>
+      <td class="activity-text">${p.activity}</td>
+      <td style="color:var(--text-muted)">${p.contributors}</td>
+      <td><a href="${p.link}" class="link-btn" target="_blank">[Link]</a></td>
+    </tr>
+  `,
+          )
+          .join("");
+
+        document.getElementById("totalProjects").textContent = data.length;
+        document.getElementById("activeProjects").textContent = data.filter(
+          (p) => p.status === "progress",
+        ).length;
+        document.getElementById("holdProjects").textContent = data.filter(
+          (p) => p.status === "hold",
+        ).length;
+        document.getElementById("completedProjects").textContent = data.filter(
+          (p) => p.status === "completed",
+        ).length;
+      }
+
+      function statusLabel(s) {
+        return (
+          {
+            progress: "In Progress",
+            completed: "Completed",
+            hold: "On Hold",
+            planned: "Planned",
+          }[s] || s
+        );
+      }
+
+      let sortDir = 1;
+      function sortBy(key) {
+        sortDir *= -1;
+        const sorted = [...projects].sort((a, b) => {
+          const map = {
+            name: "name",
+            type: "type",
+            date: "date",
+            status: "status",
+            contributors: "contributors",
+          };
+          return a[map[key]] > b[map[key]] ? sortDir : -sortDir;
+        });
+        renderTable(sorted);
+      }
+
+      function sortTable() {
+        sortBy("name");
+      }
+
+      renderTable(projects);
+    </script>
+  </body>
+</html>
