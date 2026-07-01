@@ -1,5 +1,3 @@
-// Lemon Dashboard — connects to your existing Node.js backend (port 3000)
-
 const analyzeBtn = document.getElementById("analyzeBtn");
 const repoInput = document.getElementById("repoInput");
 
@@ -9,20 +7,44 @@ repoInput.addEventListener("keydown", (e) => {
 });
 
 async function analyzeProject() {
-  console.log("Analyze clicked");
-  const repoUrl = repoInput.value.trim();
-  console.log("Input value:", repoUrl);
-  if (!repoUrl) {
-    console.log("Empty input, stopping");
-    return;
-  }
+  const input = repoInput.value.trim();
+  if (!input) return;
 
-  const projectName = repoUrl.split("/").filter(Boolean).pop() || "project";
+  const isGithubUrl = input.includes("github.com");
+  const projectName = input.split("/").filter(Boolean).pop() || "project";
+
   document.getElementById("projectName").textContent = projectName;
   document.getElementById("launchDate").textContent = "Loading...";
+  document.getElementById("lastBuild").textContent = "...";
 
+  // If GitHub URL — fetch real repo data
+  if (isGithubUrl) {
+    try {
+      const ghRes = await fetch(`/api/github?url=${encodeURIComponent(input)}`);
+      const ghData = await ghRes.json();
+      if (!ghData.error) {
+        document.getElementById("projectName").textContent =
+          ghData.full_name || projectName;
+        document.getElementById("launchDate").textContent =
+          `⭐ ${ghData.stargazers_count} stars`;
+        document.getElementById("lastBuild").textContent =
+          `📅 ${new Date(ghData.pushed_at).toLocaleDateString()}`;
+        document.querySelector(".project-head p").textContent =
+          ghData.description || "No description";
+
+        // Update stats with real GitHub data
+        document.getElementById("statCommits").textContent =
+          ghData.open_issues_count || 0;
+        document.getElementById("statModules").textContent =
+          ghData.forks_count || 0;
+      }
+    } catch (err) {
+      console.error("GitHub fetch failed:", err);
+    }
+  }
+
+  // Always query memory regardless of URL type
   try {
-    console.log("Sending fetch request...");
     const res = await fetch("/api/recall", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -30,28 +52,18 @@ async function analyzeProject() {
         question: `Summarize everything about ${projectName}`,
       }),
     });
-    console.log("Response status:", res.status);
     const data = await res.json();
-    console.log("Response data:", data);
     renderResults(projectName, data.results || []);
   } catch (err) {
-    console.error("Fetch failed:", err);
     document.getElementById("launchDate").textContent =
       "Could not reach memory server";
   }
 }
-function renderResults(projectName, results) {
-  document.getElementById("launchDate").textContent = `Project: ${projectName}`;
-  document.getElementById("lastBuild").textContent =
-    `Memories found: ${results.length}`;
 
-  document.getElementById("statCommits").textContent = results.length;
+function renderResults(projectName, results) {
   document.getElementById("statBugs").textContent = results.filter((r) =>
-    /bug|fix/i.test(r),
+    /bug|fix|error/i.test(r),
   ).length;
-  document.getElementById("statModules").textContent = new Set(
-    results.flatMap((r) => r.match(/[\w-]+\.(js|py|html|css|json)/gi) || []),
-  ).size;
   document.getElementById("statPrompts").textContent = results.filter((r) =>
     /prompt|gpt|claude|ai/i.test(r),
   ).length;
@@ -68,7 +80,7 @@ function renderResults(projectName, results) {
     .map(
       (r, i) => `
     <div class="bug-row">
-      <span><span class="bug-id">#${(i + 1).toString().padStart(3, "0")}</span>${truncate(r, 60)}</span>
+      <span><span class="bug-id">#${(i + 1).toString().padStart(3, "0")}</span>${truncate(cleanResult(r), 55)}</span>
       <span class="bug-tag fixed">Logged</span>
     </div>
   `,
@@ -80,14 +92,18 @@ function renderResults(projectName, results) {
 
 function renderTimeline(results) {
   const container = document.getElementById("timelinePoints");
-  const points = results.slice(0, 4);
-  container.innerHTML = points
+  container.innerHTML = results
+    .slice(0, 4)
     .map(
       (p) => `
-    <div class="timeline-point"><strong>•</strong>${truncate(p, 50)}</div>
+    <div class="timeline-point"><strong>•</strong> ${truncate(cleanResult(p), 45)}</div>
   `,
     )
     .join("");
+}
+
+function cleanResult(str) {
+  return str.replace(/[{}'"\[\]]/g, "").trim();
 }
 
 function truncate(str, len) {

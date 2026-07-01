@@ -49,6 +49,24 @@ app.delete("/api/forget/:dataset", async (req, res) => {
   }
 });
 
+// Fetch GitHub repo info
+app.get("/api/github", async (req, res) => {
+  try {
+    const { url } = req.query;
+    const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    if (!match) return res.status(400).json({ error: "Invalid GitHub URL" });
+
+    const [, owner, repo] = match;
+    const response = await axios.get(
+      `https://api.github.com/repos/${owner}/${repo}`,
+      { headers: { Accept: "application/vnd.github.v3+json" } },
+    );
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch repo info" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Dev Memory Assistant running on http://localhost:${PORT}`);
 });
