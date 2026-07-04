@@ -10,169 +10,14 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/style.css" />
-    <style>
-      .page-title {
-        text-align: center;
-        font-family: var(--font-display);
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 2rem;
-        color: var(--text);
-      }
-      .stats-bar {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-        margin-bottom: 2rem;
-      }
-      .stat-box {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1.2rem 1.5rem;
-      }
-      .stat-box-label {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        margin-bottom: 0.3rem;
-      }
-      .stat-box-value {
-        font-family: var(--font-display);
-        font-size: 1.6rem;
-        font-weight: 700;
-      }
-      .stat-box-value.gold {
-        color: var(--gold);
-      }
-      .stat-box-value.green {
-        color: var(--green);
-      }
-      .stat-box-value.orange {
-        color: var(--orange);
-      }
-      .stat-box-value.blue {
-        color: var(--blue);
-      }
-      .table-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        overflow: hidden;
-      }
-      .table-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1.2rem 1.5rem;
-        border-bottom: 1px solid var(--border);
-      }
-      .table-header h3 {
-        font-family: var(--font-display);
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--gold);
-      }
-      .sort-btn {
-        background: #1a2035;
-        border: 1px solid var(--border);
-        color: var(--text-muted);
-        padding: 0.4rem 1rem;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        cursor: pointer;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      th {
-        padding: 0.8rem 1.2rem;
-        text-align: left;
-        font-size: 0.75rem;
-        color: var(--text-dim);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        border-bottom: 1px solid var(--border);
-        font-weight: 500;
-        cursor: pointer;
-      }
-      th:hover {
-        color: var(--text-muted);
-      }
-      td {
-        padding: 1rem 1.2rem;
-        font-size: 0.85rem;
-        border-bottom: 1px solid #1a2035;
-      }
-      tr:last-child td {
-        border-bottom: none;
-      }
-      tr:hover td {
-        background: #0d1322;
-      }
-      .project-name {
-        font-weight: 500;
-        color: var(--text);
-      }
-      .type-badge {
-        font-size: 0.72rem;
-        padding: 0.2rem 0.6rem;
-        border-radius: 6px;
-        font-family: var(--font-mono);
-      }
-      .type-backend {
-        background: #5b8cff22;
-        color: var(--blue);
-      }
-      .type-frontend {
-        background: #f4b94222;
-        color: var(--gold);
-      }
-      .type-internal {
-        background: #22d3c822;
-        color: var(--teal);
-      }
-      .status-badge {
-        font-size: 0.72rem;
-        padding: 0.25rem 0.7rem;
-        border-radius: 6px;
-        font-weight: 600;
-      }
-      .status-progress {
-        background: #5b8cff22;
-        color: var(--blue);
-      }
-      .status-completed {
-        background: #4ade8022;
-        color: var(--green);
-      }
-      .status-hold {
-        background: #f4b94222;
-        color: var(--gold);
-      }
-      .status-planned {
-        background: #4d587322;
-        color: var(--text-dim);
-      }
-      .link-btn {
-        color: var(--gold);
-        text-decoration: none;
-        font-size: 0.8rem;
-        font-family: var(--font-mono);
-      }
-      .link-btn:hover {
-        text-decoration: underline;
-      }
-      .activity-text {
-        color: var(--text-muted);
-        font-size: 0.82rem;
-        max-width: 200px;
-      }
-    </style>
+    <link rel="stylesheet" href="css/logs.css" />
   </head>
   <body>
+    <div class="bg-glow"></div>
+    <div class="page-bg-orbs">
+      <div class="pg-orb pg-orb-1"></div>
+      <div class="pg-orb pg-orb-2"></div>
+    </div>
     <div class="bg-glow"></div>
     <header class="topbar">
       <div class="logo">
@@ -181,19 +26,401 @@
       </div>
       <nav class="nav">
         <a href="index.html" class="nav-link">Overview</a>
-        <a href="#" class="nav-link">Analytics</a>
+        <a href="analytics.html" class="nav-link">Analytics</a>
         <a href="logs.html" class="nav-link active">Project Logs</a>
         <a href="bugs.html" class="nav-link">Bugs</a>
-        <a href="#" class="nav-link">Insights</a>
       </nav>
       <div class="topbar-right">
-        <button class="icon-btn">🔔</button>
-        <div class="avatar">D</div>
+        <button class="ask-ai-btn" id="askAiBtn">
+          <span class="ask-ai-icon">🍋</span> Ask Lemon AI
+        </button>
+        <button class="login-btn" id="loginBtn">Log In</button>
       </div>
     </header>
 
+    <!-- Ask Lemon AI modal -->
+    <div class="modal-overlay" id="aiModalOverlay">
+      <div class="modal-box ai-modal">
+        <div class="modal-header">
+          <h3>🍋 Ask Lemon AI</h3>
+          <button class="modal-close" id="aiModalClose">✕</button>
+        </div>
+        <p class="modal-subtext">
+          Ask anything about this project — past sessions, why a decision was
+          made, or what's still open.
+        </p>
+        <div class="ai-chat-log" id="aiChatLog"></div>
+        <form id="aiAskForm" class="ai-ask-form">
+          <input
+            type="text"
+            id="aiQuestionInput"
+            placeholder="e.g. Why did we switch to WebSockets?"
+            autocomplete="off"
+          />
+          <button type="submit">Ask</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Login modal -->
+    <div class="modal-overlay" id="loginModalOverlay">
+      <div class="modal-box login-modal">
+        <div class="modal-header">
+          <h3>Log in to Lemon</h3>
+          <button class="modal-close" id="loginModalClose">✕</button>
+        </div>
+
+        <button class="oauth-btn google-btn" id="googleLoginBtn">
+          <span>🔵</span> Continue with Google
+        </button>
+        <button class="oauth-btn github-btn" id="githubLoginBtn">
+          <span>⚫</span> Continue with GitHub
+        </button>
+
+        <div class="modal-divider"><span>or</span></div>
+
+        <form id="emailLoginForm" class="email-login-form">
+          <input type="text" id="loginName" placeholder="Your name" required />
+          <input
+            type="text"
+            id="loginContact"
+            placeholder="Email or phone number"
+            required
+          />
+          <button type="submit">Continue</button>
+        </form>
+      </div>
+    </div>
+
+    <style>
+      .ask-ai-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(250, 204, 21, 0.1);
+        border: 1px solid rgba(250, 204, 21, 0.35);
+        color: var(--gold, #facc15);
+        border-radius: 20px;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font-body, "Inter", sans-serif);
+        transition: background 0.15s ease;
+      }
+      .ask-ai-btn:hover {
+        background: rgba(250, 204, 21, 0.18);
+      }
+      .login-btn {
+        background: var(--gold, #facc15);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 20px;
+        padding: 0.45rem 1.1rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: 0.6rem;
+      }
+      .login-btn.logged-in {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-main, #f1f1f1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-box {
+        background: #171717;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        width: 100%;
+        max-width: 420px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      }
+      .modal-header h3 {
+        margin: 0;
+        font-family: var(--font-heading, "Space Grotesk", sans-serif);
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        color: var(--text-dim, #888);
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+      .modal-subtext {
+        color: var(--text-muted, #aaa);
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+      }
+      .ai-chat-log {
+        max-height: 220px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+      }
+      .ai-chat-log .msg {
+        padding: 0.6rem 0.8rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+      .ai-chat-log .msg.user {
+        background: rgba(250, 204, 21, 0.12);
+        align-self: flex-end;
+      }
+      .ai-chat-log .msg.ai {
+        background: rgba(255, 255, 255, 0.05);
+        align-self: flex-start;
+      }
+      .ai-ask-form {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .ai-ask-form input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.55rem 0.7rem;
+        color: var(--text-main, #f1f1f1);
+        font-size: 0.85rem;
+      }
+      .ai-ask-form button {
+        background: var(--gold, #facc15);
+        border: none;
+        border-radius: 8px;
+        padding: 0.55rem 1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .oauth-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--text-main, #f1f1f1);
+        border-radius: 8px;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        margin-bottom: 0.6rem;
+      }
+      .oauth-btn:hover {
+        background: rgba(255, 255, 255, 0.09);
+      }
+      .modal-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: var(--text-dim, #888);
+        font-size: 0.75rem;
+        margin: 0.8rem 0;
+      }
+      .modal-divider::before,
+      .modal-divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .modal-divider span {
+        padding: 0 0.6rem;
+      }
+      .email-login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .email-login-form input {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 0.6rem 0.8rem;
+        color: var(--text-main, #f1f1f1);
+        font-size: 0.85rem;
+      }
+      .email-login-form button {
+        background: var(--gold, #facc15);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      /* --- Space/Glitter Hero Section for Project Logs --- */
+      .logs-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        background: #080516; /* Deep space dark backdrop */
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        padding: 5.5rem 2rem;
+        margin-bottom: 3rem;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(4, 2, 12, 0.7);
+      }
+
+      /* Cosmic nebula background radial glow */
+      .logs-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 50% 40%,
+          rgba(139, 92, 246, 0.15) 0%,
+          rgba(99, 102, 241, 0.06) 60%,
+          transparent 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Animated Floating Space Particles & Glitters */
+      .logs-hero::after {
+        content: "";
+        position: absolute;
+        inset: -40px;
+        background-image:
+          radial-gradient(1.5px 1.5px at 40px 80px, #ffd700, rgba(0, 0, 0, 0)),
+          radial-gradient(2px 2px at 120px 220px, #ffffff, rgba(0, 0, 0, 0)),
+          radial-gradient(
+            1.5px 1.5px at 280px 100px,
+            #ffe89e,
+            rgba(0, 0, 0, 0)
+          ),
+          radial-gradient(
+            2.5px 2.5px at 420px 310px,
+            #c084fc,
+            rgba(0, 0, 0, 0)
+          ),
+          radial-gradient(
+            1.5px 1.5px at 510px 140px,
+            #ffffff,
+            rgba(0, 0, 0, 0)
+          ),
+          radial-gradient(2px 2px at 640px 280px, #ffd700, rgba(0, 0, 0, 0));
+        background-size: 550px 400px;
+        opacity: 0.7;
+        animation: logsGlitterShift 30s linear infinite;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      @keyframes logsGlitterShift {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.3);
+        }
+        100% {
+          transform: translateY(-30px) rotate(-2deg);
+          filter: brightness(1);
+        }
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Badge styled exactly like the Overview section theme */
+      .logs-badge {
+        display: inline-block;
+        padding: 0.35rem 0.9rem;
+        background: rgba(139, 92, 246, 0.12);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 99px;
+        font-family: var(--font-display), sans-serif;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: #a78bfa;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 1.2rem;
+      }
+
+      /* Massive, bold header configuration */
+      .logs-title {
+        font-family: var(--font-display), sans-serif;
+        font-size: 3.6rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+        color: #ffffff;
+        line-height: 1.2;
+      }
+
+      /* Shimmering, Glittery Text Effect using animated masking */
+      .logs-title span {
+        background: linear-gradient(
+          to right,
+          #ffffff 20%,
+          #e9d5ff 40%,
+          #a78bfa 60%,
+          #ffffff 80%
+        );
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: textShimmerGlitter 5s linear infinite;
+      }
+
+      @keyframes textShimmerGlitter {
+        to {
+          background-position: 200% center;
+        }
+      }
+
+      .logs-subtitle {
+        color: #94a3b8;
+        font-size: 1.05rem;
+        max-width: 620px;
+        margin: 0 auto;
+        line-height: 1.6;
+        font-weight: 400;
+      }
+    </style>
+
     <main class="page">
-      <h2 class="page-title">Comprehensive Project Log Repository</h2>
+      <!-- High-Impact Cosmic Logs Header Section -->
+      <section class="logs-hero">
+        <div class="hero-content">
+          <div class="logs-badge">📁 Immutable Storage Vault</div>
+          <h2 class="logs-title">
+            Comprehensive <span>Project Log Repository.</span>
+          </h2>
+          <p class="logs-subtitle">
+            Every technical decision, fixed bug, and dynamic context asset
+            preserved permanently within your Cognee core.
+          </p>
+        </div>
+      </section>
 
       <div class="stats-bar">
         <div class="stat-box">
@@ -248,128 +475,159 @@
         </table>
       </div>
     </main>
-
     <script>
-      // Sample data — in production this comes from your Cognee memory
-      const projects = [
-        {
-          name: "dev-memory-assistant",
-          type: "backend",
-          date: "Jun 29, 2026",
-          status: "progress",
-          activity: "Switched to Ollama free AI, GitHub URL analysis working",
-          contributors: 1,
-          link: "https://github.com/jimkashi2808-ctrl/dev-memory-assistant",
-        },
-        {
-          name: "Lemon Dashboard UI",
-          type: "frontend",
-          date: "Jun 30, 2026",
-          status: "progress",
-          activity: "Dark theme dashboard with gold accents deployed",
-          contributors: 1,
-          link: "#",
-        },
-        {
-          name: "Cognee Integration",
-          type: "internal",
-          date: "Jun 29, 2026",
-          status: "completed",
-          activity: "Memory save and recall fully working",
-          contributors: 1,
-          link: "#",
-        },
-        {
-          name: "GitHub API Bridge",
-          type: "backend",
-          date: "Jul 01, 2026",
-          status: "completed",
-          activity: "Real repo data fetching working",
-          contributors: 1,
-          link: "#",
-        },
-        {
-          name: "Ollama Local AI",
-          type: "internal",
-          date: "Jun 30, 2026",
-          status: "completed",
-          activity: "llama3.2 + nomic-embed-text running locally",
-          contributors: 1,
-          link: "#",
-        },
-        {
-          name: "Bug Tracker Page",
-          type: "frontend",
-          date: "Jul 01, 2026",
-          status: "progress",
-          activity: "Issue matrix being built",
-          contributors: 1,
-          link: "bugs.html",
-        },
-      ];
+      async function loadRealLogs() {
+        try {
+          const res = await fetch("/api/logs");
+          const data = await res.json();
 
-      function renderTable(data) {
-        const tbody = document.getElementById("projectTableBody");
-        tbody.innerHTML = data
-          .map(
-            (p) => `
-    <tr>
-      <td class="project-name">${p.name}</td>
-      <td><span class="type-badge type-${p.type}">${p.type}</span></td>
-      <td style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.8rem">${p.date}</td>
-      <td><span class="status-badge status-${p.status}">${statusLabel(p.status)}</span></td>
-      <td class="activity-text">${p.activity}</td>
-      <td style="color:var(--text-muted)">${p.contributors}</td>
-      <td><a href="${p.link}" class="link-btn" target="_blank">[Link]</a></td>
-    </tr>
-  `,
-          )
-          .join("");
+          document.getElementById("totalProjects").textContent =
+            data.projects.length || 0;
+          document.getElementById("activeProjects").textContent =
+            data.total || 0;
+          document.getElementById("holdProjects").textContent = data.bugs || 0;
+          document.getElementById("completedProjects").textContent =
+            data.prompts || 0;
 
-        document.getElementById("totalProjects").textContent = data.length;
-        document.getElementById("activeProjects").textContent = data.filter(
-          (p) => p.status === "progress",
-        ).length;
-        document.getElementById("holdProjects").textContent = data.filter(
-          (p) => p.status === "hold",
-        ).length;
-        document.getElementById("completedProjects").textContent = data.filter(
-          (p) => p.status === "completed",
-        ).length;
+          document.querySelector(
+            ".stat-box:nth-child(1) .stat-box-label",
+          ).textContent = "Total Projects";
+          document.querySelector(
+            ".stat-box:nth-child(2) .stat-box-label",
+          ).textContent = "Total Sessions";
+          document.querySelector(
+            ".stat-box:nth-child(3) .stat-box-label",
+          ).textContent = "Bugs Logged";
+          document.querySelector(
+            ".stat-box:nth-child(4) .stat-box-label",
+          ).textContent = "AI Prompts";
+
+          const tbody = document.getElementById("projectTableBody");
+
+          if (data.logs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:2rem">No sessions logged yet — go to Overview and save your first session</td></tr>`;
+            return;
+          }
+
+          tbody.innerHTML = data.logs
+            .map(
+              (l, i) => `
+      <tr>
+        <td class="project-name">${l.dataset}</td>
+        <td><span class="type-badge type-${l.type === "bug" ? "backend" : "frontend"}">${l.type}</span></td>
+        <td style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.8rem">${new Date(l.timestamp).toLocaleDateString()}</td>
+        <td><span class="status-badge status-progress">Active</span></td>
+        <td class="activity-text">${truncate(l.text, 60)}</td>
+        <td style="color:var(--text-muted)">1</td>
+        <td><span style="color:var(--text-dim);font-size:0.8rem">Local</span></td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (err) {
+          document.getElementById("projectTableBody").innerHTML =
+            `<tr><td colspan="7" style="text-align:center;color:var(--text-dim);padding:2rem">Could not connect to memory server</td></tr>`;
+        }
       }
 
-      function statusLabel(s) {
-        return (
-          {
-            progress: "In Progress",
-            completed: "Completed",
-            hold: "On Hold",
-            planned: "Planned",
-          }[s] || s
-        );
+      function truncate(str, len) {
+        return str.length > len ? str.slice(0, len) + "..." : str;
       }
 
-      let sortDir = 1;
-      function sortBy(key) {
-        sortDir *= -1;
-        const sorted = [...projects].sort((a, b) => {
-          const map = {
-            name: "name",
-            type: "type",
-            date: "date",
-            status: "status",
-            contributors: "contributors",
-          };
-          return a[map[key]] > b[map[key]] ? sortDir : -sortDir;
-        });
-        renderTable(sorted);
+      loadRealLogs();
+    </script>
+    <script>
+      // ---------- Ask Lemon AI modal ----------
+      const askAiBtn = document.getElementById("askAiBtn");
+      const aiModalOverlay = document.getElementById("aiModalOverlay");
+      const aiModalClose = document.getElementById("aiModalClose");
+      const aiAskForm = document.getElementById("aiAskForm");
+      const aiQuestionInput = document.getElementById("aiQuestionInput");
+      const aiChatLog = document.getElementById("aiChatLog");
+
+      askAiBtn.addEventListener("click", () =>
+        aiModalOverlay.classList.add("open"),
+      );
+      aiModalClose.addEventListener("click", () =>
+        aiModalOverlay.classList.remove("open"),
+      );
+      aiModalOverlay.addEventListener("click", (e) => {
+        if (e.target === aiModalOverlay)
+          aiModalOverlay.classList.remove("open");
+      });
+
+      aiAskForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const question = aiQuestionInput.value.trim();
+        if (!question) return;
+
+        aiChatLog.innerHTML += `<div class="msg user">${question}</div>`;
+        aiQuestionInput.value = "";
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+
+        aiChatLog.innerHTML += `<div class="msg ai" id="aiThinking">Thinking...</div>`;
+
+        try {
+          const res = await fetch("/api/recall", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+          const data = await res.json();
+          document.getElementById("aiThinking").textContent =
+            data.answer || data.response || "No answer found.";
+        } catch (err) {
+          document.getElementById("aiThinking").textContent =
+            "Couldn't reach the memory server.";
+        }
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+      });
+
+      // ---------- Login modal (demo auth, no real OAuth yet) ----------
+      const loginBtn = document.getElementById("loginBtn");
+      const loginModalOverlay = document.getElementById("loginModalOverlay");
+      const loginModalClose = document.getElementById("loginModalClose");
+      const emailLoginForm = document.getElementById("emailLoginForm");
+      const googleLoginBtn = document.getElementById("googleLoginBtn");
+      const githubLoginBtn = document.getElementById("githubLoginBtn");
+
+      function setLoggedInUser(name) {
+        localStorage.setItem("lemonUser", name);
+        loginBtn.textContent = name;
+        loginBtn.classList.add("logged-in");
       }
 
-      function sortTable() {
-        sortBy("name");
-      }
+      const savedUser = localStorage.getItem("lemonUser");
+      if (savedUser) setLoggedInUser(savedUser);
 
-      renderTable(projects);
+      loginBtn.addEventListener("click", () => {
+        if (loginBtn.classList.contains("logged-in")) return;
+        loginModalOverlay.classList.add("open");
+      });
+      loginModalClose.addEventListener("click", () =>
+        loginModalOverlay.classList.remove("open"),
+      );
+      loginModalOverlay.addEventListener("click", (e) => {
+        if (e.target === loginModalOverlay)
+          loginModalOverlay.classList.remove("open");
+      });
+
+      emailLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("loginName").value.trim();
+        if (!name) return;
+        setLoggedInUser(name);
+        loginModalOverlay.classList.remove("open");
+      });
+
+      googleLoginBtn.addEventListener("click", () => {
+        setLoggedInUser("Google User");
+        loginModalOverlay.classList.remove("open");
+      });
+      githubLoginBtn.addEventListener("click", () => {
+        setLoggedInUser("GitHub User");
+        loginModalOverlay.classList.remove("open");
+      });
     </script>
   </body>
 </html>

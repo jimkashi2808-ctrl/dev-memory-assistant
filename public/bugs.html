@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
       .page-title {
         text-align: center;
@@ -53,7 +54,7 @@
       }
       .bottom-grid {
         display: grid;
-        grid-template-columns: 1.4fr 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
         margin-top: 1.5rem;
       }
@@ -120,16 +121,12 @@
       .context-badge {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
         background: #1a2035;
         border: 1px solid var(--border);
         border-radius: 6px;
         padding: 0.2rem 0.5rem;
         font-size: 0.72rem;
         color: var(--text-muted);
-      }
-      .arrow {
-        color: var(--text-dim);
       }
       .file-ref {
         font-family: var(--font-mono);
@@ -167,21 +164,30 @@
         font-weight: 600;
         margin-bottom: 0.3rem;
       }
-      .donut-wrap {
-        display: flex;
-        justify-content: center;
-        margin: 1.5rem 0;
+      .muted {
+        color: var(--text-muted);
+        font-size: 0.85rem;
       }
-      .legend {
+      .small {
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+      }
+      .legend-list {
         display: flex;
         flex-direction: column;
-        gap: 0.7rem;
+        gap: 0.5rem;
+        margin-top: 1rem;
       }
       .legend-item {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
-        font-size: 0.82rem;
+        justify-content: space-between;
+        font-size: 0.8rem;
+      }
+      .legend-left {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         color: var(--text-muted);
       }
       .legend-dot {
@@ -190,12 +196,16 @@
         border-radius: 50%;
         flex-shrink: 0;
       }
+      .legend-val {
+        font-family: var(--font-mono);
+        color: var(--text);
+        font-size: 0.78rem;
+      }
       .heatmap-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 16px;
         padding: 1.5rem;
-        margin-top: 1rem;
       }
       .heatmap-card h3 {
         font-family: var(--font-display);
@@ -205,254 +215,617 @@
       }
       .heatmap-grid {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 3px;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 4px;
         margin-top: 1rem;
       }
       .heatmap-cell {
         width: 100%;
         aspect-ratio: 1;
         border-radius: 3px;
+        cursor: pointer;
+        transition: transform 0.1s;
+      }
+      .heatmap-cell:hover {
+        transform: scale(1.3);
+      }
+      .empty-state {
+        text-align: center;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+        padding: 2rem;
+        font-style: italic;
+      }
+      .donut-wrap {
+        position: relative;
+        max-width: 180px;
+        margin: 1rem auto;
+      }
+      .donut-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      .donut-center-val {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .donut-center-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+      }
+      .bugs-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        background: #060413;
+        border: 1px solid rgba(168, 85, 247, 0.15);
+        padding: 5.5rem 2rem;
+        margin-bottom: 3rem;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(3, 2, 10, 0.7);
+      }
+      .bugs-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(239, 68, 68, 0.12) 0%,
+          rgba(147, 51, 234, 0.08) 45%,
+          transparent 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+      .bugs-hero::after {
+        content: "";
+        position: absolute;
+        inset: -40px;
+        background-image:
+          radial-gradient(1.5px 1.5px at 60px 90px, #ff4e4e, rgba(0, 0, 0, 0)),
+          radial-gradient(2px 2px at 180px 150px, #ffffff, rgba(0, 0, 0, 0)),
+          radial-gradient(
+            1.5px 1.5px at 320px 240px,
+            #ffe89e,
+            rgba(0, 0, 0, 0)
+          ),
+          radial-gradient(2.5px 2.5px at 490px 80px, #c084fc, rgba(0, 0, 0, 0)),
+          radial-gradient(
+            1.5px 1.5px at 580px 290px,
+            #ffffff,
+            rgba(0, 0, 0, 0)
+          ),
+          radial-gradient(2px 2px at 710px 190px, #ffd700, rgba(0, 0, 0, 0));
+        background-size: 500px 380px;
+        opacity: 0.75;
+        animation: bugsGlitterMove 28s linear infinite;
+        z-index: 1;
+        pointer-events: none;
+      }
+      @keyframes bugsGlitterMove {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.4);
+        }
+        100% {
+          transform: translateY(-35px) rotate(2deg);
+          filter: brightness(1);
+        }
+      }
+      .bugs-hero .hero-content {
+        position: relative;
+        z-index: 2;
+      }
+      .bugs-badge {
+        display: inline-block;
+        padding: 0.35rem 0.9rem;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        border-radius: 99px;
+        font-family: var(--font-display);
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: #fca5a5;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 1.2rem;
+      }
+      .bugs-title {
+        font-family: var(--font-display);
+        font-size: 3.6rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+        color: #ffffff;
+        line-height: 1.2;
+      }
+      .bugs-title span {
+        background: linear-gradient(
+          to right,
+          #ffffff 15%,
+          #fed7aa 35%,
+          #f4b942 55%,
+          #ffffff 85%
+        );
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: bugsTextSparkle 4.5s linear infinite;
+      }
+      @keyframes bugsTextSparkle {
+        to {
+          background-position: 200% center;
+        }
+      }
+      .bugs-subtitle {
+        color: #94a3b8;
+        font-size: 1.05rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
       }
     </style>
   </head>
   <body>
     <div class="bg-glow"></div>
+
+    <!-- Ask Lemon AI Modal -->
+    <div class="modal-overlay" id="aiModalOverlay">
+      <div class="modal-box ai-modal">
+        <div class="modal-header">
+          <h3>🍋 Ask Lemon AI</h3>
+          <button class="modal-close" id="aiModalClose">✕</button>
+        </div>
+        <p class="modal-subtext">
+          Ask anything about your projects — past sessions, bugs, decisions.
+        </p>
+        <div class="ai-chat-log" id="aiChatLog"></div>
+        <form id="aiAskForm" class="ai-ask-form">
+          <input
+            type="text"
+            id="aiQuestionInput"
+            placeholder="e.g. What bugs did I fix?"
+            autocomplete="off"
+          />
+          <button type="submit">Ask</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModalOverlay">
+      <div class="modal-box login-modal">
+        <div class="modal-header">
+          <h3>Log in to Lemon</h3>
+          <button class="modal-close" id="loginModalClose">✕</button>
+        </div>
+        <button class="oauth-btn" id="googleLoginBtn">
+          <span>🔵</span> Continue with Google
+        </button>
+        <button class="oauth-btn" id="githubLoginBtn">
+          <span>⚫</span> Continue with GitHub
+        </button>
+        <div class="modal-divider"><span>or</span></div>
+        <form id="emailLoginForm" class="email-login-form">
+          <input type="text" id="loginName" placeholder="Your name" required />
+          <input
+            type="text"
+            id="loginContact"
+            placeholder="Email or phone number"
+            required
+          />
+          <button type="submit">Continue</button>
+        </form>
+      </div>
+    </div>
+
     <header class="topbar">
       <div class="logo">
-        <span class="logo-dot">🍋</span>
-        <span class="logo-text">Lemon<span class="dot">.</span></span>
+        <span class="logo-dot">🍋</span
+        ><span class="logo-text">Lemon<span class="dot">.</span></span>
       </div>
       <nav class="nav">
         <a href="index.html" class="nav-link">Overview</a>
-        <a href="#" class="nav-link">Analytics</a>
+        <a href="analytics.html" class="nav-link">Analytics</a>
         <a href="logs.html" class="nav-link">Project Logs</a>
         <a href="bugs.html" class="nav-link active">Bugs</a>
-        <a href="#" class="nav-link">Insights</a>
       </nav>
       <div class="topbar-right">
-        <button class="icon-btn">🔔</button>
-        <div class="avatar">D</div>
+        <button class="ask-ai-btn" id="askAiBtn">
+          <span class="ask-ai-icon">🍋</span> Ask Lemon AI
+        </button>
+        <button class="login-btn" id="loginBtn">Log In</button>
       </div>
     </header>
 
     <main class="page">
-      <h2 class="page-title">
-        Advanced Bug Mitigation &amp; Project Health Center
-      </h2>
-
+      <section class="bugs-hero">
+        <div class="hero-content">
+          <div class="bugs-badge">🛡️ Real-Time Intelligence Shield</div>
+          <h2 class="bugs-title">
+            Advanced Bug Mitigation & <span>Project Health Center.</span>
+          </h2>
+          <p class="bugs-subtitle">
+            Isolate runtime exceptions, trace architectural breakdowns, and
+            secure context memory flow flawlessly.
+          </p>
+        </div>
+      </section>
       <div class="bug-stats">
         <div class="bug-stat-box" style="border-color: #ff444444">
           <div class="bug-stat-icon">🔴</div>
           <div>
-            <div class="bug-stat-label">Critical Bugs Open</div>
-            <div class="bug-stat-value red" id="criticalCount">5</div>
+            <div class="bug-stat-label">Bugs Detected</div>
+            <div class="bug-stat-value red" id="criticalCount">0</div>
           </div>
         </div>
         <div class="bug-stat-box" style="border-color: #4ade8044">
           <div class="bug-stat-icon">✅</div>
           <div>
-            <div class="bug-stat-label">Bugs Resolved</div>
-            <div class="bug-stat-value green" id="resolvedCount">78</div>
+            <div class="bug-stat-label">Sessions Resolved</div>
+            <div class="bug-stat-value green" id="resolvedCount">0</div>
           </div>
         </div>
       </div>
 
       <div class="table-card">
         <div class="table-header">
-          <h3>Issue Matrix</h3>
-          <button class="sort-btn">⇅ Sort All</button>
+          <h3>Issue Matrix — Real Data from Your Sessions</h3>
+          <button class="sort-btn">⇅ Sort</button>
         </div>
         <table>
           <thead>
             <tr>
               <th>Incident ID</th>
-              <th>Project Context</th>
-              <th>Problem Source</th>
-              <th>Impact Area</th>
-              <th>Fix Details</th>
-              <th>Status</th>
+              <th>Project</th>
+              <th>File Detected</th>
+              <th>Session Note</th>
+              <th>Date</th>
+              <th>Severity</th>
             </tr>
           </thead>
-          <tbody id="bugTableBody"></tbody>
+          <tbody id="bugTableBody">
+            <tr>
+              <td colspan="6" class="empty-state">Loading...</td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
       <div class="bottom-grid">
-        <div>
-          <div class="portfolio-card">
-            <h3>Project Status &amp; Portfolio Breakdown</h3>
-            <p class="muted small">Live bug distribution</p>
-            <div class="donut-wrap">
-              <svg viewBox="0 0 120 120" width="160" height="160">
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="45"
-                  fill="none"
-                  stroke="#1a2035"
-                  stroke-width="18"
-                />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="45"
-                  fill="none"
-                  stroke="var(--gold)"
-                  stroke-width="18"
-                  stroke-dasharray="85 197"
-                  stroke-dashoffset="0"
-                  transform="rotate(-90 60 60)"
-                />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="45"
-                  fill="none"
-                  stroke="var(--green)"
-                  stroke-width="18"
-                  stroke-dasharray="70 197"
-                  stroke-dashoffset="-85"
-                  transform="rotate(-90 60 60)"
-                />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="45"
-                  fill="none"
-                  stroke="var(--blue)"
-                  stroke-width="18"
-                  stroke-dasharray="42 197"
-                  stroke-dashoffset="-155"
-                  transform="rotate(-90 60 60)"
-                />
-              </svg>
-            </div>
-            <div class="legend">
-              <div class="legend-item">
-                <div class="legend-dot" style="background: var(--gold)"></div>
-                In Progress
-              </div>
-              <div class="legend-item">
-                <div class="legend-dot" style="background: var(--green)"></div>
-                Completed
-              </div>
-              <div class="legend-item">
-                <div class="legend-dot" style="background: var(--blue)"></div>
-                Planned
-              </div>
+        <div class="portfolio-card">
+          <h3>Project Status &amp; Category Breakdown</h3>
+          <p class="muted small">Real distribution from your logged sessions</p>
+          <div class="donut-wrap">
+            <canvas id="realDonutChart" height="180"></canvas>
+            <div class="donut-center">
+              <div class="donut-center-val" id="donutTotal">0</div>
+              <div class="donut-center-label">Sessions</div>
             </div>
           </div>
+          <div class="legend-list" id="donutLegend"></div>
         </div>
 
-        <div>
-          <div class="heatmap-card">
-            <h3>Activity Heatmap</h3>
-            <p class="muted small">Overall bug fix activity</p>
-            <div class="heatmap-grid" id="heatmapGrid"></div>
+        <div class="heatmap-card">
+          <h3>Activity Heatmap</h3>
+          <p class="muted small">Your real session activity — last 70 days</p>
+          <div class="heatmap-grid" id="heatmapGrid"></div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-top: 0.5rem;
+              font-size: 0.72rem;
+              color: var(--text-dim);
+            "
+          >
+            <span>Less</span>
+            <div style="display: flex; gap: 3px; align-items: center">
+              <div
+                style="
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 2px;
+                  background: #1a2035;
+                "
+              ></div>
+              <div
+                style="
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 2px;
+                  background: #f4b94233;
+                "
+              ></div>
+              <div
+                style="
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 2px;
+                  background: #f4b94266;
+                "
+              ></div>
+              <div
+                style="
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 2px;
+                  background: #f4b942aa;
+                "
+              ></div>
+              <div
+                style="
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 2px;
+                  background: #f4b942;
+                "
+              ></div>
+            </div>
+            <span>More</span>
           </div>
         </div>
       </div>
     </main>
 
     <script>
-      const bugs = [
-        {
-          id: "#BUG-713",
-          context: "backend → E-commerce API",
-          source: "user_auth.py line 142",
-          impact: "Auth service bottleneck",
-          fix: "Implemented N+1 query fix, reducing latency by 35%",
-          status: "critical",
-        },
-        {
-          id: "#BUG-901",
-          context: "backend → Lemon AI Model",
-          source: "user_auth.py line 142",
-          impact: "Model response delay",
-          fix: "Implemented N+1 query fix, reducing latency by 35%",
-          status: "high",
-        },
-        {
-          id: "#BUG-714",
-          context: "backend → User Auth Module",
-          source: "user_auth.py line 142",
-          impact: "Login failures",
-          fix: "JWT expiry increased to 7 days",
-          status: "medium",
-        },
-        {
-          id: "#BUG-716",
-          context: "backend → Client Portal",
-          source: "user_auth.py line 142",
-          impact: "Dashboard load time",
-          fix: "Lazy loading implemented",
-          status: "medium",
-        },
-        {
-          id: "#BUG-717",
-          context: "backend → Data Pipeline",
-          source: "pipeline.py line 89",
-          impact: "Data sync delays",
-          fix: "Batch processing optimized",
-          status: "medium",
-        },
-        {
-          id: "#BUG-718",
-          context: "frontend → Lemon UI",
-          source: "style.css line 45",
-          impact: "Layout breaking on mobile",
-          fix: "Responsive grid fixed",
-          status: "medium",
-        },
-      ];
+      async function loadRealBugs() {
+        try {
+          const res = await fetch("/api/logs");
+          const data = await res.json();
+          const logs = data.logs || [];
+          const bugLogs = logs.filter((l) => l.is_bug);
+          const resolvedLogs = logs.filter((l) =>
+            /fix|fixed|resolved|done|solved|completed/.test(
+              l.text.toLowerCase(),
+            ),
+          );
 
-      function renderBugs() {
-        const tbody = document.getElementById("bugTableBody");
-        tbody.innerHTML = bugs
-          .map(
-            (b) => `
-    <tr>
-      <td class="incident-id">${b.id}</td>
-      <td><span class="context-badge">${b.context}</span></td>
-      <td class="file-ref">${b.source}</td>
-      <td style="color:var(--text-muted);font-size:0.8rem">${b.impact}</td>
-      <td style="color:var(--text-secondary);font-size:0.8rem;max-width:200px">${b.fix}</td>
-      <td><span class="severity-badge sev-${b.status}">${severityLabel(b.status)}</span></td>
-    </tr>
-  `,
-          )
-          .join("");
+          document.getElementById("criticalCount").textContent = bugLogs.length;
+          document.getElementById("resolvedCount").textContent =
+            resolvedLogs.length;
+
+          const tbody = document.getElementById("bugTableBody");
+          if (logs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No sessions logged yet — go to Overview and save sessions mentioning bugs or fixes</td></tr>`;
+          } else if (bugLogs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No bug-related sessions found — try logging sessions that mention "bug", "fix", "error", or "issue"</td></tr>`;
+          } else {
+            tbody.innerHTML = bugLogs
+              .map((b, i) => {
+                const isCritical = /crash|critical|null|undefined/.test(
+                  b.text.toLowerCase(),
+                );
+                const isHigh = /auth|security|jwt|token|login/.test(
+                  b.text.toLowerCase(),
+                );
+                const sev = isCritical
+                  ? "critical"
+                  : isHigh
+                    ? "high"
+                    : "medium";
+                const sevLabel = isCritical
+                  ? "CRITICAL"
+                  : isHigh
+                    ? "HIGH"
+                    : "MEDIUM";
+                const file =
+                  b.files && b.files.length > 0 ? b.files[0] : "unspecified";
+                return `<tr>
+          <td class="incident-id">#BUG-${String(b.id).padStart(3, "0")}</td>
+          <td><span class="context-badge">${b.dataset}</span></td>
+          <td class="file-ref">${file}</td>
+          <td style="color:var(--text-muted);font-size:0.8rem;max-width:220px">${b.text.length > 80 ? b.text.substring(0, 80) + "..." : b.text}</td>
+          <td style="color:var(--text-dim);font-size:0.78rem;font-family:var(--font-mono)">${new Date(b.timestamp).toLocaleDateString()}</td>
+          <td><span class="severity-badge sev-${sev}">${sevLabel}</span></td>
+        </tr>`;
+              })
+              .join("");
+          }
+
+          // Real donut chart
+          const cats = {
+            Engineering: 0,
+            Security: 0,
+            Performance: 0,
+            Design: 0,
+            Other: 0,
+          };
+          logs.forEach((l) => {
+            const t = l.text.toLowerCase();
+            if (/auth|security|jwt|token|password|login/.test(t))
+              cats.Security++;
+            else if (/performance|speed|slow|optim|latency/.test(t))
+              cats.Performance++;
+            else if (/ui|design|css|layout|style|frontend/.test(t))
+              cats.Design++;
+            else if (/bug|fix|error|crash|issue/.test(t)) cats.Engineering++;
+            else cats.Other++;
+          });
+
+          const catLabels = Object.keys(cats).filter((k) => cats[k] > 0);
+          const catValues = catLabels.map((k) => cats[k]);
+          const catColors = [
+            "#f4b942",
+            "#4ade80",
+            "#5b8cff",
+            "#f97356",
+            "#22d3c8",
+          ];
+          const total = catValues.reduce((a, b) => a + b, 0);
+          document.getElementById("donutTotal").textContent = total;
+
+          if (total > 0) {
+            new Chart(document.getElementById("realDonutChart"), {
+              type: "doughnut",
+              data: {
+                labels: catLabels,
+                datasets: [
+                  {
+                    data: catValues,
+                    backgroundColor: catColors.slice(0, catLabels.length),
+                    borderWidth: 0,
+                    hoverOffset: 6,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                animation: { duration: 1500 },
+                plugins: { legend: { display: false } },
+                cutout: "65%",
+              },
+            });
+            document.getElementById("donutLegend").innerHTML = catLabels
+              .map(
+                (l, i) =>
+                  `<div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:${catColors[i]}"></div>${l}</div><div class="legend-val">${catValues[i]}</div></div>`,
+              )
+              .join("");
+          } else {
+            document.getElementById("realDonutChart").parentElement.innerHTML =
+              '<div class="empty-state">Log sessions to see category breakdown</div>';
+          }
+
+          // Real heatmap
+          const activityMap = {};
+          logs.forEach((l) => {
+            const date = l.timestamp.split("T")[0];
+            activityMap[date] = (activityMap[date] || 0) + 1;
+          });
+          const maxAct = Math.max(...Object.values(activityMap), 1);
+          const colors = [
+            "#1a2035",
+            "#f4b94233",
+            "#f4b94266",
+            "#f4b942aa",
+            "#f4b942",
+          ];
+          const grid = document.getElementById("heatmapGrid");
+          let cells = "";
+          for (let i = 69; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dateStr = d.toISOString().split("T")[0];
+            const count = activityMap[dateStr] || 0;
+            const intensity =
+              count === 0 ? 0 : Math.min(4, Math.ceil((count / maxAct) * 4));
+            cells += `<div class="heatmap-cell" style="background:${colors[intensity]}" title="${dateStr}: ${count} session(s)"></div>`;
+          }
+          grid.innerHTML = cells;
+        } catch (err) {
+          console.error("Failed:", err);
+          document.getElementById("bugTableBody").innerHTML =
+            '<tr><td colspan="6" class="empty-state">Could not connect to memory server</td></tr>';
+        }
       }
 
-      function severityLabel(s) {
-        return (
-          {
-            critical: "CRITICAL FIXED",
-            high: "HIGH IN PROGRESS",
-            medium: "MEDIUM RESOLVED",
-          }[s] || s
-        );
-      }
+      loadRealBugs();
 
-      // Generate heatmap
-      function renderHeatmap() {
-        const grid = document.getElementById("heatmapGrid");
-        const colors = [
-          "#1a2035",
-          "#f4b94222",
-          "#f4b94255",
-          "#f4b94288",
-          "#f4b942",
-        ];
-        grid.innerHTML = Array.from({ length: 70 }, () => {
-          const intensity = Math.floor(Math.random() * 5);
-          return `<div class="heatmap-cell" style="background:${colors[intensity]}"></div>`;
-        }).join("");
-      }
+      // Ask AI
+      const askAiBtn = document.getElementById("askAiBtn");
+      const aiModalOverlay = document.getElementById("aiModalOverlay");
+      const aiModalClose = document.getElementById("aiModalClose");
+      const aiAskForm = document.getElementById("aiAskForm");
+      const aiQuestionInput = document.getElementById("aiQuestionInput");
+      const aiChatLog = document.getElementById("aiChatLog");
 
-      renderBugs();
-      renderHeatmap();
+      askAiBtn.addEventListener("click", () =>
+        aiModalOverlay.classList.add("open"),
+      );
+      aiModalClose.addEventListener("click", () =>
+        aiModalOverlay.classList.remove("open"),
+      );
+      aiModalOverlay.addEventListener("click", (e) => {
+        if (e.target === aiModalOverlay)
+          aiModalOverlay.classList.remove("open");
+      });
+
+      aiAskForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const question = aiQuestionInput.value.trim();
+        if (!question) return;
+
+        aiChatLog.innerHTML += `<div class="msg user">${question}</div>`;
+        aiQuestionInput.value = "";
+
+        const thinkingId = "aiThinking_" + Date.now();
+        aiChatLog.innerHTML += `<div class="msg ai" id="${thinkingId}">Thinking...</div>`;
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+
+        try {
+          const res = await fetch("/api/recall", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+          const data = await res.json();
+          const answer =
+            data.results && data.results.length > 0
+              ? data.results[0]
+              : "No memory found. Try logging a session first.";
+          document.getElementById(thinkingId).textContent = answer;
+        } catch (err) {
+          document.getElementById(thinkingId).textContent =
+            "Could not reach memory server.";
+        }
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+      });
+      // Login
+      const loginBtn = document.getElementById("loginBtn");
+      const loginModalOverlay = document.getElementById("loginModalOverlay");
+      const loginModalClose = document.getElementById("loginModalClose");
+      function setLoggedInUser(name) {
+        localStorage.setItem("lemonUser", name);
+        loginBtn.textContent = name;
+        loginBtn.classList.add("logged-in");
+        loginModalOverlay.classList.remove("open");
+      }
+      const savedUser = localStorage.getItem("lemonUser");
+      if (savedUser) setLoggedInUser(savedUser);
+      loginBtn.addEventListener("click", () => {
+        if (loginBtn.classList.contains("logged-in")) {
+          localStorage.removeItem("lemonUser");
+          loginBtn.textContent = "Log In";
+          loginBtn.classList.remove("logged-in");
+          return;
+        }
+        loginModalOverlay.classList.add("open");
+      });
+      loginModalClose.addEventListener("click", () =>
+        loginModalOverlay.classList.remove("open"),
+      );
+      loginModalOverlay.addEventListener("click", (e) => {
+        if (e.target === loginModalOverlay)
+          loginModalOverlay.classList.remove("open");
+      });
+      document
+        .getElementById("emailLoginForm")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("loginName").value.trim();
+          if (name) setLoggedInUser(name);
+        });
+      document
+        .getElementById("googleLoginBtn")
+        .addEventListener("click", () => {
+          const name = prompt("Enter your name:");
+          if (name) setLoggedInUser(name);
+        });
+      document
+        .getElementById("githubLoginBtn")
+        .addEventListener("click", () => {
+          const name = prompt("Enter your GitHub username:");
+          if (name) setLoggedInUser(name);
+        });
     </script>
   </body>
 </html>

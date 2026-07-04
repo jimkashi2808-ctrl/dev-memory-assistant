@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lemon — Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+      /* --- Dynamic Hero Section --- */
+      .analytics-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        background: #070b14;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 5rem 2rem;
+        margin-bottom: 3rem;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Animated mesh background overlay */
+      .analytics-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          125deg,
+          rgba(244, 185, 66, 0.15) 0%,
+          rgba(91, 140, 255, 0.1) 40%,
+          rgba(74, 222, 128, 0.05) 100%
+        );
+        background-size: 200% 200%;
+        animation: gradientShift 8s ease infinite alternate;
+        z-index: 1;
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      .page-title {
+        font-family: var(--font-display);
+        font-size: 3.5rem; /* Massive bold sizing */
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 0.8rem;
+        color: #ffffff;
+        background: linear-gradient(to right, #ffffff 40%, #ffe89e 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: heroTextGlow 4s ease-in-out infinite alternate;
+      }
+
+      @keyframes heroTextGlow {
+        0% {
+          filter: drop-shadow(0 0 10px rgba(244, 185, 66, 0.1));
+        }
+        100% {
+          filter: drop-shadow(0 0 25px rgba(244, 185, 66, 0.35));
+        }
+      }
+
+      .page-subtitle {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+        font-weight: 400;
+      }
+
+      /* --- Dashboard Grid System --- */
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+      .analytics-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem 2.5rem;
+        min-height: 380px;
+        transition:
+          transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+          border-color 0.4s ease,
+          box-shadow 0.4s ease;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(244, 185, 66, 0.4);
+        box-shadow:
+          0 12px 30px rgba(0, 0, 0, 0.4),
+          0 0 20px rgba(244, 185, 66, 0.05);
+      }
+      .card h3 {
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+      .muted {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+      .small {
+        font-size: 0.8rem;
+        margin-bottom: 1.2rem;
+      }
+      .chart-wrap {
+        position: relative;
+        margin-top: 1rem;
+      }
+      .stat-highlight {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--gold);
+        margin: 0.5rem 0 0.2rem;
+        transition: all 0.3s ease;
+      }
+      .stat-highlight-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .empty-state {
+        text-align: center;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+        padding: 2rem;
+        font-style: italic;
+      }
+      .prompt-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        max-height: 260px;
+        overflow-y: auto;
+      }
+      .prompt-item {
+        background: #0d1322;
+        border-radius: 8px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        border-left: 3px solid var(--gold);
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease;
+      }
+      .prompt-item:hover {
+        transform: translateX(4px);
+        background: #131b2e;
+      }
+      .prompt-project {
+        font-family: var(--font-mono);
+        color: var(--gold);
+        font-size: 0.72rem;
+        margin-bottom: 0.2rem;
+      }
+      .donut-wrap {
+        position: relative;
+        max-width: 200px;
+        margin: 0 auto;
+      }
+      .donut-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      .donut-center-val {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .donut-center-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+      }
+      .legend-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.8rem;
+      }
+      .legend-left {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-muted);
+      }
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .legend-val {
+        font-family: var(--font-mono);
+        color: var(--text);
+        font-size: 0.78rem;
+      }
+      .mem-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      .mem-box {
+        background: #0d1322;
+        border-radius: 10px;
+        padding: 1rem;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+      .mem-box:hover {
+        border-color: rgba(255, 255, 255, 0.05);
+        background: #111827;
+      }
+      .mem-val {
+        font-family: var(--font-display);
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--gold);
+      }
+      .mem-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.2rem;
+      }
+      /* --- Space/Glitter Hero Section (Matched to Overview Layout) --- */
+      .analytics-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        background: #0b071e; /* Deep indigo/space background from screenshot */
+        border: 1px solid rgba(147, 51, 234, 0.15);
+        padding: 6rem 2rem;
+        margin-bottom: 3rem;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(5, 3, 15, 0.6);
+      }
+
+      /* Cosmic purple ambient glow */
+      .analytics-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(147, 51, 234, 0.18) 0%,
+          rgba(79, 70, 229, 0.08) 50%,
+          transparent 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Layer 1: Moving & Twinkling Glitters/Stars */
+      .analytics-hero::after {
+        content: "";
+        position: absolute;
+        inset: -50px;
+        background-image:
+          radial-gradient(1.5px 1.5px at 20px 30px, #ffd700, rgba(0, 0, 0, 0)),
+          radial-gradient(2px 2px at 90px 140px, #ffffff, rgba(0, 0, 0, 0)),
+          radial-gradient(1.5px 1.5px at 150px 60px, #ffe89e, rgba(0, 0, 0, 0)),
+          radial-gradient(
+            2.5px 2.5px at 220px 210px,
+            #a78bfa,
+            rgba(0, 0, 0, 0)
+          ),
+          radial-gradient(
+            1.5px 1.5px at 300px 110px,
+            #ffffff,
+            rgba(0, 0, 0, 0)
+          ),
+          radial-gradient(2px 2px at 380px 270px, #ffd700, rgba(0, 0, 0, 0));
+        background-size: 450px 350px;
+        opacity: 0.65;
+        animation: spaceGlitter 25s linear infinite;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Keyframes for smooth cosmic floating & subtle twinkling shimmer */
+      @keyframes spaceGlitter {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          filter: brightness(1);
+        }
+        50% {
+          filter: brightness(1.4);
+        }
+        100% {
+          transform: translateY(-40px) rotate(3deg);
+          filter: brightness(1);
+        }
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Badging style matched to "AI MEMORY FOR YOUR PROJECTS" from the image */
+      .hero-badge {
+        display: inline-block;
+        padding: 0.35rem 0.9rem;
+        background: rgba(147, 51, 234, 0.12);
+        border: 1px solid rgba(147, 51, 234, 0.3);
+        border-radius: 99px;
+        font-family: var(--font-display), sans-serif;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: #c084fc;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Font theme matching "Give your AI a memory." */
+      .page-title {
+        font-family: var(--font-display), sans-serif;
+        font-size: 3.8rem; /* Bold sizing cover */
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 1.2rem;
+        color: #ffffff;
+        line-height: 1.15;
+      }
+
+      /* Gradient highlight mirroring the look in Screenshot 2026-07-04 174951.jpg */
+      .page-title span {
+        background: linear-gradient(to right, #ffffff 30%, #b886fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .page-subtitle {
+        color: #94a3b8;
+        font-size: 1.05rem;
+        max-width: 580px;
+        margin: 0 auto;
+        line-height: 1.6;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-glow"></div>
+    <div class="page-bg-orbs">
+      <div class="pg-orb pg-orb-1"></div>
+      <div class="pg-orb pg-orb-2"></div>
+    </div>
+    <div class="bg-glow"></div>
+
+    <!-- Ask Lemon AI Modal -->
+    <div class="modal-overlay" id="aiModalOverlay">
+      <div class="modal-box ai-modal">
+        <div class="modal-header">
+          <h3>🍋 Ask Lemon AI</h3>
+          <button class="modal-close" id="aiModalClose">✕</button>
+        </div>
+        <p class="modal-subtext">
+          Ask anything about your projects — past sessions, bugs, decisions, or
+          what's still open.
+        </p>
+        <div class="ai-chat-log" id="aiChatLog"></div>
+        <form id="aiAskForm" class="ai-ask-form">
+          <input
+            type="text"
+            id="aiQuestionInput"
+            placeholder="e.g. What bug did I fix in auth.js?"
+            autocomplete="off"
+          />
+          <button type="submit">Ask</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModalOverlay">
+      <div class="modal-box login-modal">
+        <div class="modal-header">
+          <h3>Log in to Lemon</h3>
+          <button class="modal-close" id="loginModalClose">✕</button>
+        </div>
+        <button class="oauth-btn google-btn" id="googleLoginBtn">
+          <span>🔵</span> Continue with Google
+        </button>
+        <button class="oauth-btn github-btn" id="githubLoginBtn">
+          <span>⚫</span> Continue with GitHub
+        </button>
+        <div class="modal-divider"><span>or</span></div>
+        <form id="emailLoginForm" class="email-login-form">
+          <input type="text" id="loginName" placeholder="Your name" required />
+          <input
+            type="text"
+            id="loginContact"
+            placeholder="Email or phone number"
+            required
+          />
+          <button type="submit">Continue</button>
+        </form>
+      </div>
+    </div>
+
+    <header class="topbar">
+      <div class="logo">
+        <span class="logo-dot">🍋</span>
+        <span class="logo-text">Lemon<span class="dot">.</span></span>
+      </div>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Overview</a>
+        <a href="analytics.html" class="nav-link active">Analytics</a>
+        <a href="logs.html" class="nav-link">Project Logs</a>
+        <a href="bugs.html" class="nav-link">Bugs</a>
+      </nav>
+      <div class="topbar-right">
+        <button class="ask-ai-btn" id="askAiBtn">
+          <span class="ask-ai-icon">🍋</span> Ask Lemon AI
+        </button>
+        <button class="login-btn" id="loginBtn">Log In</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <!-- High-impact Cosmic Space Header Section -->
+      <section class="analytics-hero">
+        <div class="hero-content">
+          <div class="hero-badge">📊 COGNEE ANALYTICS ENGINE</div>
+          <h2 class="page-title">Visualizing your <span>AI Memory.</span></h2>
+          <p class="page-subtitle">
+            Real-time data streams and decision frequency tracking directly from
+            your session logs.
+          </p>
+        </div>
+      </section>
+
+      <!-- Dashboard Elements Below -->
+      <div class="analytics-grid">
+        <div class="card">
+          <h3>Projects Logged</h3>
+          <p class="muted small">
+            Sessions saved per project — real data from your memory
+          </p>
+          <div class="chart-wrap">
+            <canvas id="projectsChart" height="200"></canvas>
+          </div>
+          <p id="projectsEmpty" class="empty-state" style="display: none">
+            No sessions yet — save your first session on the Overview page
+          </p>
+        </div>
+        <div class="card">
+          <h3>AI Prompts Used</h3>
+          <p class="muted small">
+            Sessions where you mentioned using AI — real data
+          </p>
+          <div class="stat-highlight" id="totalPrompts">0</div>
+          <div class="stat-highlight-label">AI Prompt Sessions Detected</div>
+          <div class="prompt-list" id="promptList">
+            <div class="empty-state">No AI prompt sessions logged yet</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analytics-grid-2">
+        <div class="card">
+          <h3>Session Frequency</h3>
+          <p class="muted small">How many sessions per project</p>
+          <div class="stat-highlight" id="totalSessions">0</div>
+          <div class="stat-highlight-label">Total Sessions Logged</div>
+          <div class="chart-wrap">
+            <canvas id="sessionChart" height="140"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Decision Category Distribution</h3>
+          <p class="muted small">
+            What areas your decisions fall into — detected from session text
+          </p>
+          <div class="donut-wrap">
+            <canvas id="decisionChart" height="200"></canvas>
+            <div class="donut-center">
+              <div class="donut-center-val" id="decisionTotal">0</div>
+              <div class="donut-center-label">Decisions</div>
+            </div>
+          </div>
+          <div class="legend-list" id="decisionLegend"></div>
+        </div>
+      </div>
+
+      <div class="analytics-grid-2">
+        <div class="card">
+          <h3>Decision Outcome Rate</h3>
+          <p class="muted small">
+            Progress status of your logged work — detected from keywords
+          </p>
+          <div class="donut-wrap">
+            <canvas id="outcomeChart" height="200"></canvas>
+            <div class="donut-center">
+              <div class="donut-center-val" id="outcomeRate">0%</div>
+              <div class="donut-center-label">Resolved</div>
+            </div>
+          </div>
+          <div class="legend-list" id="outcomeLegend"></div>
+        </div>
+        <div class="card">
+          <h3>Memory Stats</h3>
+          <p class="muted small">Your Cognee knowledge graph — live numbers</p>
+          <div class="mem-grid">
+            <div class="mem-box">
+              <div class="mem-val" id="memTotal">0</div>
+              <div class="mem-label">Total Memories</div>
+            </div>
+            <div class="mem-box">
+              <div class="mem-val" id="memPrompts">0</div>
+              <div class="mem-label">AI Prompts</div>
+            </div>
+            <div class="mem-box">
+              <div class="mem-val" id="memProjects">0</div>
+              <div class="mem-label">Projects</div>
+            </div>
+            <div class="mem-box">
+              <div class="mem-val" id="memBugs">0</div>
+              <div class="mem-label">Bugs Logged</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const COLORS = [
+        "#f4b942",
+        "#4ade80",
+        "#5b8cff",
+        "#22d3c8",
+        "#f97356",
+        "#a78bfa",
+        "#fb923c",
+        "#34d399",
+      ];
+
+      const chartDefaults = {
+        responsive: true,
+        animation: {
+          duration: 2200,
+          easing: "easeOutQuart",
+        },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            grid: { color: "#1f2940" },
+            ticks: { color: "#7c89a8", font: { size: 11 } },
+          },
+          y: {
+            grid: { color: "#1f2940" },
+            ticks: { color: "#7c89a8", font: { size: 11 } },
+            beginAtZero: true,
+          },
+        },
+      };
+
+      function animateValue(obj, start, end, duration) {
+        if (start === end) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          const current = Math.floor(progress * (end - start) + start);
+          obj.textContent = obj.id === "outcomeRate" ? current + "%" : current;
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        };
+        window.requestAnimationFrame(step);
+      }
+
+      async function loadAnalytics() {
+        try {
+          const res = await fetch("/api/logs");
+          const data = await res.json();
+          const logs = data.logs || [];
+          const total = data.total || 0;
+          const bugs = data.bugs || 0;
+          const prompts = data.prompts || 0;
+          const projects = data.projects || [];
+
+          animateValue(document.getElementById("memTotal"), 0, total, 1500);
+          animateValue(document.getElementById("memPrompts"), 0, prompts, 1500);
+          animateValue(
+            document.getElementById("memProjects"),
+            0,
+            projects.length,
+            1500,
+          );
+          animateValue(document.getElementById("memBugs"), 0, bugs, 1500);
+          animateValue(
+            document.getElementById("totalSessions"),
+            0,
+            total,
+            1500,
+          );
+          animateValue(
+            document.getElementById("totalPrompts"),
+            0,
+            prompts,
+            1500,
+          );
+
+          if (projects.length === 0) {
+            document.getElementById("projectsEmpty").style.display = "block";
+            document.getElementById("projectsChart").style.display = "none";
+          } else {
+            const counts = {};
+            logs.forEach((l) => {
+              counts[l.dataset] = (counts[l.dataset] || 0) + 1;
+            });
+            const labels = Object.keys(counts);
+            const values = Object.values(counts);
+            new Chart(document.getElementById("projectsChart"), {
+              type: "bar",
+              data: {
+                labels,
+                datasets: [
+                  {
+                    data: values,
+                    backgroundColor: labels.map(
+                      (_, i) => COLORS[i % COLORS.length] + "44",
+                    ),
+                    borderColor: labels.map(
+                      (_, i) => COLORS[i % COLORS.length],
+                    ),
+                    borderWidth: 2,
+                    borderRadius: 8,
+                  },
+                ],
+              },
+              options: {
+                ...chartDefaults,
+                plugins: { legend: { display: false } },
+              },
+            });
+          }
+
+          const promptLogs = logs.filter((l) => l.is_prompt);
+          if (promptLogs.length > 0) {
+            document.getElementById("promptList").innerHTML = promptLogs
+              .map(
+                (l) =>
+                  `<div class="prompt-item"><div class="prompt-project">${l.dataset}</div>${l.text.substring(0, 100)}${l.text.length > 100 ? "..." : ""}</div>`,
+              )
+              .join("");
+          }
+
+          if (projects.length > 0) {
+            const counts = {};
+            logs.forEach((l) => {
+              counts[l.dataset] = (counts[l.dataset] || 0) + 1;
+            });
+            new Chart(document.getElementById("sessionChart"), {
+              type: "bar",
+              data: {
+                labels: Object.keys(counts),
+                datasets: [
+                  {
+                    data: Object.values(counts),
+                    backgroundColor: "#f4b94233",
+                    borderColor: "#f4b942",
+                    borderWidth: 1.5,
+                    borderRadius: 6,
+                  },
+                ],
+              },
+              options: chartDefaults,
+            });
+          } else {
+            new Chart(document.getElementById("sessionChart"), {
+              type: "bar",
+              data: {
+                labels: ["No data yet"],
+                datasets: [{ data: [0], backgroundColor: "#1f2940" }],
+              },
+              options: chartDefaults,
+            });
+          }
+
+          const cats = {
+            Engineering: 0,
+            Security: 0,
+            Performance: 0,
+            Finance: 0,
+            Design: 0,
+            Other: 0,
+          };
+          logs.forEach((l) => {
+            const t = l.text.toLowerCase();
+            if (/auth|security|login|jwt|token|password/.test(t))
+              cats.Security++;
+            else if (/performance|speed|latency|slow|optim/.test(t))
+              cats.Performance++;
+            else if (/cost|budget|pricing|pay|free/.test(t)) cats.Finance++;
+            else if (/ui|design|style|css|layout|frontend/.test(t))
+              cats.Design++;
+            else if (/bug|fix|error|crash|issue/.test(t)) cats.Engineering++;
+            else cats.Other++;
+          });
+          const catLabels = Object.keys(cats).filter((k) => cats[k] > 0);
+          const catValues = catLabels.map((k) => cats[k]);
+          const catColors = catLabels.map((_, i) => COLORS[i % COLORS.length]);
+          const decTotal = catValues.reduce((a, b) => a + b, 0);
+
+          animateValue(
+            document.getElementById("decisionTotal"),
+            0,
+            decTotal,
+            1500,
+          );
+
+          if (decTotal > 0) {
+            new Chart(document.getElementById("decisionChart"), {
+              type: "doughnut",
+              data: {
+                labels: catLabels,
+                datasets: [
+                  {
+                    data: catValues,
+                    backgroundColor: catColors,
+                    borderWidth: 0,
+                    hoverOffset: 6,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                animation: { duration: 2200 },
+                plugins: { legend: { display: false } },
+                cutout: "65%",
+              },
+            });
+            document.getElementById("decisionLegend").innerHTML = catLabels
+              .map(
+                (l, i) =>
+                  `<div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:${catColors[i]}"></div>${l}</div><div class="legend-val">${catValues[i]}</div></div>`,
+              )
+              .join("");
+          } else {
+            document.getElementById("decisionChart").parentElement.innerHTML =
+              '<div class="empty-state">Log sessions to see decision categories</div>';
+          }
+
+          const resolved = logs.filter((l) =>
+            /fix|fixed|resolved|done|completed|solved/.test(
+              l.text.toLowerCase(),
+            ),
+          ).length;
+          const inProg = logs.filter((l) =>
+            /working|trying|investigating|debug/.test(l.text.toLowerCase()),
+          ).length;
+          const open = Math.max(0, total - resolved - inProg);
+          const pct = total > 0 ? Math.round((resolved / total) * 100) : 0;
+
+          animateValue(document.getElementById("outcomeRate"), 0, pct, 1500);
+
+          const oLabels = ["Resolved", "In Progress", "Open"];
+          const oValues = [resolved, inProg, open];
+          const oColors = ["#4ade80", "#f4b942", "#5b8cff"];
+          new Chart(document.getElementById("outcomeChart"), {
+            type: "doughnut",
+            data: {
+              labels: oLabels,
+              datasets: [
+                {
+                  data: oValues.map((v) => v || 0.1),
+                  backgroundColor: oColors,
+                  borderWidth: 0,
+                  hoverOffset: 6,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              animation: { duration: 2200 },
+              plugins: { legend: { display: false } },
+              cutout: "65%",
+            },
+          });
+          document.getElementById("outcomeLegend").innerHTML = oLabels
+            .map(
+              (l, i) =>
+                `<div class="legend-item"><div class="legend-left"><div class="legend-dot" style="background:${oColors[i]}"></div>${l}</div><div class="legend-val">${oValues[i]}</div></div>`,
+            )
+            .join("");
+        } catch (err) {
+          console.error("Analytics load failed:", err);
+        }
+      }
+
+      loadAnalytics();
+
+      // ── Ask Lemon AI Modal ──
+      const askAiBtn = document.getElementById("askAiBtn");
+      const aiModalOverlay = document.getElementById("aiModalOverlay");
+      const aiModalClose = document.getElementById("aiModalClose");
+      const aiAskForm = document.getElementById("aiAskForm");
+      const aiQuestionInput = document.getElementById("aiQuestionInput");
+      const aiChatLog = document.getElementById("aiChatLog");
+
+      askAiBtn.addEventListener("click", () =>
+        aiModalOverlay.classList.add("open"),
+      );
+      aiModalClose.addEventListener("click", () =>
+        aiModalOverlay.classList.remove("open"),
+      );
+      aiModalOverlay.addEventListener("click", (e) => {
+        if (e.target === aiModalOverlay)
+          aiModalOverlay.classList.remove("open");
+      });
+
+      aiAskForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const question = aiQuestionInput.value.trim();
+        if (!question) return;
+
+        aiChatLog.innerHTML += `<div class="msg user">${question}</div>`;
+        aiQuestionInput.value = "";
+
+        const thinkingId = "aiThinking_" + Date.now();
+        aiChatLog.innerHTML += `<div class="msg ai" id="${thinkingId}">Thinking...</div>`;
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+
+        try {
+          const res = await fetch("/api/recall", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+          const data = await res.json();
+          const answer =
+            data.results && data.results.length > 0
+              ? data.results[0]
+              : "No memory found. Try logging a session first.";
+          document.getElementById(thinkingId).textContent = answer;
+        } catch (err) {
+          document.getElementById(thinkingId).textContent =
+            "Could not reach memory server.";
+        }
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+      });
+      // ── Login Modal ──
+      const loginBtn = document.getElementById("loginBtn");
+      const loginModalOverlay = document.getElementById("loginModalOverlay");
+      const loginModalClose = document.getElementById("loginModalClose");
+      const emailLoginForm = document.getElementById("emailLoginForm");
+      const googleLoginBtn = document.getElementById("googleLoginBtn");
+      const githubLoginBtn = document.getElementById("githubLoginBtn");
+
+      function setLoggedInUser(name) {
+        localStorage.setItem("lemonUser", name);
+        loginBtn.textContent = name;
+        loginBtn.classList.add("logged-in");
+        loginModalOverlay.classList.remove("open");
+      }
+
+      const savedUser = localStorage.getItem("lemonUser");
+      if (savedUser) setLoggedInUser(savedUser);
+
+      loginBtn.addEventListener("click", () => {
+        if (loginBtn.classList.contains("logged-in")) {
+          localStorage.removeItem("lemonUser");
+          loginBtn.textContent = "Log In";
+          loginBtn.classList.remove("logged-in");
+          return;
+        }
+        loginModalOverlay.classList.add("open");
+      });
+
+      loginModalClose.addEventListener("click", () =>
+        loginModalOverlay.classList.remove("open"),
+      );
+      loginModalOverlay.addEventListener("click", (e) => {
+        if (e.target === loginModalOverlay)
+          loginModalOverlay.classList.remove("open");
+      });
+      emailLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("loginName").value.trim();
+        if (name) setLoggedInUser(name);
+      });
+      googleLoginBtn.addEventListener("click", () => {
+        const name = prompt("Enter your Google name:");
+        if (name) setLoggedInUser(name);
+      });
+      githubLoginBtn.addEventListener("click", () => {
+        const name = prompt("Enter your GitHub username:");
+        if (name) setLoggedInUser(name);
+      });
+    </script>
+  </body>
+</html>

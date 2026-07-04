@@ -9,6 +9,346 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .hero {
+        position: relative;
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: hidden;
+        margin: -2.5rem -2.5rem 3rem;
+        padding: 5rem 5rem 4rem;
+        background: radial-gradient(
+          ellipse 120% 80% at 60% 40%,
+          #1a0a2e 0%,
+          #0a0e1a 60%
+        );
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      .hero-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        animation: orb-float 8s ease-in-out infinite;
+      }
+      .hero-orb-1 {
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, #7c3aed44, transparent 70%);
+        top: -100px;
+        right: -50px;
+        animation-delay: 0s;
+      }
+      .hero-orb-2 {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, #f4b94233, transparent 70%);
+        top: 100px;
+        right: 200px;
+        animation-delay: 2s;
+      }
+      .hero-orb-3 {
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, #5b8cff22, transparent 70%);
+        bottom: 50px;
+        right: 100px;
+        animation-delay: 4s;
+      }
+      @keyframes orb-float {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-30px) scale(1.05);
+        }
+      }
+      .hero-particles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: var(--gold);
+        border-radius: 50%;
+        animation: particle-rise linear infinite;
+        opacity: 0;
+      }
+      @keyframes particle-rise {
+        0% {
+          transform: translateY(100vh);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.8;
+        }
+        90% {
+          opacity: 0.3;
+        }
+        100% {
+          transform: translateY(-10vh);
+          opacity: 0;
+        }
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(124, 58, 237, 0.2);
+        border: 1px solid rgba(124, 58, 237, 0.4);
+        border-radius: 20px;
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+        color: #a78bfa;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        animation: fadeInDown 0.8s ease forwards;
+      }
+      .hero-badge-dot {
+        width: 7px;
+        height: 7px;
+        background: #a78bfa;
+        border-radius: 50%;
+        animation: pulse-dot 1.5s ease-in-out infinite;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.4);
+        }
+      }
+      .hero-title {
+        font-family: var(--font-display);
+        font-size: clamp(3rem, 6vw, 5rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        color: var(--text);
+        margin-bottom: 1.2rem;
+        animation: fadeInUp 0.9s ease forwards;
+        animation-delay: 0.1s;
+        opacity: 0;
+      }
+      .hero-highlight {
+        color: #a78bfa;
+        text-shadow: 0 0 60px #7c3aed88;
+        position: relative;
+      }
+      .hero-highlight::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+        animation: shimmer 2s ease-in-out infinite;
+      }
+      @keyframes shimmer {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scaleX(0.5);
+        }
+        50% {
+          opacity: 1;
+          transform: scaleX(1);
+        }
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        line-height: 1.7;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.9s ease forwards;
+        animation-delay: 0.25s;
+        opacity: 0;
+        max-width: 480px;
+      }
+      .hero-subtitle strong {
+        color: var(--text);
+      }
+      .hero-features {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.9s ease forwards;
+        animation-delay: 0.4s;
+        opacity: 0;
+      }
+      .hero-feature {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+      .hero-feature-icon {
+        font-size: 1rem;
+      }
+      .hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, #7c3aed, #5b8cff);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 0.85rem 2rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        animation: fadeInUp 0.9s ease forwards;
+        animation-delay: 0.55s;
+        opacity: 0;
+        transition:
+          filter 0.2s,
+          transform 0.1s;
+        box-shadow: 0 8px 32px #7c3aed44;
+      }
+      .hero-cta:hover {
+        filter: brightness(1.1);
+        transform: translateY(-2px);
+      }
+      .hero-scroll {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+        margin-top: 2rem;
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        animation: fadeInUp 0.9s ease forwards;
+        animation-delay: 0.7s;
+        opacity: 0;
+      }
+      .scroll-arrow {
+        animation: bounce 2s ease-in-out infinite;
+        font-size: 1rem;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(6px);
+        }
+      }
+      .float-card {
+        position: absolute;
+        z-index: 2;
+        background: rgba(17, 24, 43, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        backdrop-filter: blur(10px);
+        min-width: 200px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+      .float-card-icon {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .float-card-title {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .float-card-desc {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 0.1rem;
+      }
+      .float-card-1 {
+        top: 20%;
+        right: 8%;
+        animation: float-card 6s ease-in-out infinite;
+      }
+      .float-card-2 {
+        top: 45%;
+        right: 5%;
+        animation: float-card 6s ease-in-out infinite;
+        animation-delay: 2s;
+      }
+      .float-card-3 {
+        bottom: 20%;
+        right: 10%;
+        animation: float-card 6s ease-in-out infinite;
+        animation-delay: 4s;
+      }
+      @keyframes float-card {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-12px);
+        }
+      }
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .hero-image-glow {
+        position: absolute;
+        right: -100px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(circle, #7c3aed22 0%, transparent 60%);
+        border-radius: 50%;
+        z-index: 1;
+      }
+      @media (max-width: 900px) {
+        .float-card {
+          display: none;
+        }
+        .hero {
+          min-height: 70vh;
+          padding: 4rem 1.5rem 3rem;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="bg-glow"></div>
@@ -20,21 +360,334 @@
       </div>
       <nav class="nav">
         <a href="index.html" class="nav-link active">Overview</a>
-        <a href="#" class="nav-link">Analytics</a>
+        <a href="analytics.html" class="nav-link">Analytics</a>
         <a href="logs.html" class="nav-link">Project Logs</a>
         <a href="bugs.html" class="nav-link">Bugs</a>
-        <a href="#" class="nav-link">Insights</a>
       </nav>
       <div class="topbar-right">
-        <button class="icon-btn" aria-label="Notifications">🔔</button>
-        <div class="avatar">D</div>
+        <button class="ask-ai-btn" id="askAiBtn">
+          <span class="ask-ai-icon">🍋</span> Ask Lemon AI
+        </button>
+        <button class="login-btn" id="loginBtn">Log In</button>
       </div>
     </header>
 
+    <!-- Ask Lemon AI modal -->
+    <div class="modal-overlay" id="aiModalOverlay">
+      <div class="modal-box ai-modal">
+        <div class="modal-header">
+          <h3>🍋 Ask Lemon AI</h3>
+          <button class="modal-close" id="aiModalClose">✕</button>
+        </div>
+        <p class="modal-subtext">
+          Ask anything about this project — past sessions, why a decision was
+          made, or what's still open.
+        </p>
+        <div class="ai-chat-log" id="aiChatLog"></div>
+        <form id="aiAskForm" class="ai-ask-form">
+          <input
+            type="text"
+            id="aiQuestionInput"
+            placeholder="e.g. Why did we switch to WebSockets?"
+            autocomplete="off"
+          />
+          <button type="submit">Ask</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Login modal -->
+    <div class="modal-overlay" id="loginModalOverlay">
+      <div class="modal-box login-modal">
+        <div class="modal-header">
+          <h3>Log in to Lemon</h3>
+          <button class="modal-close" id="loginModalClose">✕</button>
+        </div>
+
+        <button class="oauth-btn google-btn" id="googleLoginBtn">
+          <span>🔵</span> Continue with Google
+        </button>
+        <button class="oauth-btn github-btn" id="githubLoginBtn">
+          <span>⚫</span> Continue with GitHub
+        </button>
+
+        <div class="modal-divider"><span>or</span></div>
+
+        <form id="emailLoginForm" class="email-login-form">
+          <input type="text" id="loginName" placeholder="Your name" required />
+          <input
+            type="text"
+            id="loginContact"
+            placeholder="Email or phone number"
+            required
+          />
+          <button type="submit">Continue</button>
+        </form>
+      </div>
+    </div>
+
+    <style>
+      .ask-ai-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(250, 204, 21, 0.1);
+        border: 1px solid rgba(250, 204, 21, 0.35);
+        color: var(--gold, #facc15);
+        border-radius: 20px;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font-body, "Inter", sans-serif);
+        transition: background 0.15s ease;
+      }
+      .ask-ai-btn:hover {
+        background: rgba(250, 204, 21, 0.18);
+      }
+      .login-btn {
+        background: var(--gold, #facc15);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 20px;
+        padding: 0.45rem 1.1rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: 0.6rem;
+      }
+      .login-btn.logged-in {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-main, #f1f1f1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-box {
+        background: #171717;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        width: 100%;
+        max-width: 420px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+      }
+      .modal-header h3 {
+        margin: 0;
+        font-family: var(--font-heading, "Space Grotesk", sans-serif);
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        color: var(--text-dim, #888);
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+      .modal-subtext {
+        color: var(--text-muted, #aaa);
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+      }
+      .ai-chat-log {
+        max-height: 220px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+      }
+      .ai-chat-log .msg {
+        padding: 0.6rem 0.8rem;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+      .ai-chat-log .msg.user {
+        background: rgba(250, 204, 21, 0.12);
+        align-self: flex-end;
+      }
+      .ai-chat-log .msg.ai {
+        background: rgba(255, 255, 255, 0.05);
+        align-self: flex-start;
+      }
+      .ai-ask-form {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .ai-ask-form input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.55rem 0.7rem;
+        color: var(--text-main, #f1f1f1);
+        font-size: 0.85rem;
+      }
+      .ai-ask-form button {
+        background: var(--gold, #facc15);
+        border: none;
+        border-radius: 8px;
+        padding: 0.55rem 1rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .oauth-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--text-main, #f1f1f1);
+        border-radius: 8px;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        margin-bottom: 0.6rem;
+      }
+      .oauth-btn:hover {
+        background: rgba(255, 255, 255, 0.09);
+      }
+      .modal-divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: var(--text-dim, #888);
+        font-size: 0.75rem;
+        margin: 0.8rem 0;
+      }
+      .modal-divider::before,
+      .modal-divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .modal-divider span {
+        padding: 0 0.6rem;
+      }
+      .email-login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .email-login-form input {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 0.6rem 0.8rem;
+        color: var(--text-main, #f1f1f1);
+        font-size: 0.85rem;
+      }
+      .email-login-form button {
+        background: var(--gold, #facc15);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+    </style>
+
     <main class="page">
+      <section class="hero">
+        <div class="hero-bg">
+          <div class="hero-orb hero-orb-1"></div>
+          <div class="hero-orb hero-orb-2"></div>
+          <div class="hero-orb hero-orb-3"></div>
+          <div class="hero-particles" id="heroParticles"></div>
+        </div>
+        <div class="hero-image-glow"></div>
+
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            AI MEMORY FOR YOUR PROJECTS
+          </div>
+
+          <h1 class="hero-title">
+            Give your AI<br />
+            a <span class="hero-highlight">memory.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Lemon remembers every bug you fixed, every decision you made, every
+            AI prompt that saved your project —
+            <strong>so you never lose context again.</strong>
+          </p>
+
+          <div class="hero-features">
+            <div class="hero-feature">
+              <span class="hero-feature-icon">🧠</span> Remembers Every Decision
+            </div>
+            <div class="hero-feature">
+              <span class="hero-feature-icon">🔍</span> Understands Full Context
+            </div>
+            <div class="hero-feature">
+              <span class="hero-feature-icon">⚡</span> Guides Better Choices
+            </div>
+          </div>
+
+          <button
+            class="hero-cta"
+            onclick="
+              document
+                .querySelector('.search-row')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            Explore Your Memory ↗
+          </button>
+
+          <div class="hero-scroll">
+            <span>Scroll down to explore insights</span>
+            <span class="scroll-arrow">↓</span>
+          </div>
+        </div>
+
+        <div class="float-card float-card-1">
+          <div class="float-card-icon">🐛</div>
+          <div>
+            <div class="float-card-title">Bug Fixed</div>
+            <div class="float-card-desc">JWT token expiry in auth.js</div>
+          </div>
+        </div>
+        <div class="float-card float-card-2">
+          <div class="float-card-icon">🤖</div>
+          <div>
+            <div class="float-card-title">AI Prompt Used</div>
+            <div class="float-card-desc">Claude helped debug the regex</div>
+          </div>
+        </div>
+        <div class="float-card float-card-3">
+          <div class="float-card-icon">💡</div>
+          <div>
+            <div class="float-card-title">Decision Logged</div>
+            <div class="float-card-desc">Switched to Ollama for free AI</div>
+          </div>
+        </div>
+      </section>
       <section class="search-row">
         <div class="search-bar">
-          <span class="search-prefix">lemon.dev/analyze/</span>
+          <span class="search-prefix"></span>
           <input
             id="repoInput"
             type="text"
@@ -88,31 +741,234 @@
 
       <section class="overview-grid second-row">
         <div class="card timeline-card">
-          <h3>Session Timeline</h3>
-          <p class="muted small">What you worked on, in order</p>
-          <svg
-            id="timelineSvg"
-            viewBox="0 0 900 220"
-            preserveAspectRatio="none"
-          >
-            <path
-              id="timelinePath"
-              d="M 20 150 Q 200 60 450 110 T 880 90"
-            ></path>
-          </svg>
-          <div class="timeline-points" id="timelinePoints"></div>
+          <h3>Project Activity Timeline</h3>
+          <p class="muted small">Flowing activity timeline with animations</p>
+          <canvas id="timelineChart" height="160"></canvas>
+          <div class="timeline-points" id="timelinePoints">
+            <div class="timeline-point">
+              <strong>Started Building</strong>Jun 29
+            </div>
+            <div class="timeline-point"><strong>Setup Core</strong>Jun 30</div>
+            <div class="timeline-point"><strong>Milestone 1</strong>Jul 1</div>
+            <div class="timeline-point">
+              <strong>Major Release</strong>Jul 5
+            </div>
+          </div>
         </div>
 
         <div class="card prompts-card">
-          <h3>AI Prompts Used</h3>
-          <p class="muted small">Reasoning behind your fixes</p>
-          <div class="prompt-graph" id="promptGraph">
-            <div class="graph-center">🍋</div>
-          </div>
+          <h3>📝 Log a Session</h3>
+          <p class="muted small">
+            What did you work on? Be specific — mention bugs, files, AI prompts
+            used
+          </p>
+          <textarea
+            id="sessionText"
+            rows="4"
+            style="
+              width: 100%;
+              background: #0d1322;
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              color: var(--text);
+              padding: 0.75rem;
+              font-size: 0.85rem;
+              resize: vertical;
+              margin-bottom: 0.75rem;
+              font-family: var(--font-body);
+            "
+            placeholder="e.g. Fixed JWT bug in auth.js, used Claude AI prompt to debug, token was expiring too early..."
+          ></textarea>
+          <input
+            id="sessionProject"
+            type="text"
+            placeholder="Project name (e.g. lemon)"
+            style="
+              width: 100%;
+              background: #0d1322;
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              color: var(--text);
+              padding: 0.65rem 0.75rem;
+              font-size: 0.85rem;
+              margin-bottom: 0.75rem;
+              font-family: var(--font-body);
+            "
+          />
+          <button
+            onclick="saveSession()"
+            style="
+              width: 100%;
+              background: var(--gold);
+              color: #1a1300;
+              border: none;
+              border-radius: 8px;
+              padding: 0.75rem;
+              font-weight: 600;
+              font-size: 0.9rem;
+              cursor: pointer;
+              transition: filter 0.2s;
+            "
+          >
+            💾 Save to Memory
+          </button>
+          <p
+            id="saveStatus"
+            style="
+              margin-top: 0.6rem;
+              font-size: 0.85rem;
+              color: var(--green);
+              min-height: 20px;
+            "
+          ></p>
+          <button
+            onclick="loadRecentSessions()"
+            style="
+              width: 100%;
+              background: #1a2035;
+              color: var(--text-muted);
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              padding: 0.6rem;
+              font-size: 0.82rem;
+              cursor: pointer;
+              margin-top: 0.5rem;
+            "
+          >
+            📋 View & Delete Sessions
+          </button>
+          <div
+            id="sessionsList"
+            style="
+              margin-top: 0.8rem;
+              display: none;
+              max-height: 200px;
+              overflow-y: auto;
+              flex-direction: column;
+              gap: 0.4rem;
+            "
+          ></div>
         </div>
       </section>
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <script src="js/app.js"></script>
+    <script>
+      // ---------- Ask Lemon AI modal ----------
+      const askAiBtn = document.getElementById("askAiBtn");
+      const aiModalOverlay = document.getElementById("aiModalOverlay");
+      const aiModalClose = document.getElementById("aiModalClose");
+      const aiAskForm = document.getElementById("aiAskForm");
+      const aiQuestionInput = document.getElementById("aiQuestionInput");
+      const aiChatLog = document.getElementById("aiChatLog");
+
+      askAiBtn.addEventListener("click", () =>
+        aiModalOverlay.classList.add("open"),
+      );
+      aiModalClose.addEventListener("click", () =>
+        aiModalOverlay.classList.remove("open"),
+      );
+      aiModalOverlay.addEventListener("click", (e) => {
+        if (e.target === aiModalOverlay)
+          aiModalOverlay.classList.remove("open");
+      });
+      aiAskForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const question = aiQuestionInput.value.trim();
+        if (!question) return;
+
+        aiChatLog.innerHTML += `<div class="msg user">${question}</div>`;
+        aiQuestionInput.value = "";
+
+        const thinkingId = "aiThinking_" + Date.now();
+        aiChatLog.innerHTML += `<div class="msg ai" id="${thinkingId}">Thinking...</div>`;
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+
+        try {
+          const res = await fetch("/api/recall", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question }),
+          });
+          const data = await res.json();
+          const answer =
+            data.results && data.results.length > 0
+              ? data.results[0]
+              : "No memory found. Try logging a session first.";
+          document.getElementById(thinkingId).textContent = answer;
+        } catch (err) {
+          document.getElementById(thinkingId).textContent =
+            "Could not reach memory server.";
+        }
+        aiChatLog.scrollTop = aiChatLog.scrollHeight;
+      });
+
+      // ---------- Login modal (demo auth, no real OAuth yet) ----------
+      const loginBtn = document.getElementById("loginBtn");
+      const loginModalOverlay = document.getElementById("loginModalOverlay");
+      const loginModalClose = document.getElementById("loginModalClose");
+      const emailLoginForm = document.getElementById("emailLoginForm");
+      const googleLoginBtn = document.getElementById("googleLoginBtn");
+      const githubLoginBtn = document.getElementById("githubLoginBtn");
+
+      function setLoggedInUser(name) {
+        localStorage.setItem("lemonUser", name);
+        loginBtn.textContent = name;
+        loginBtn.classList.add("logged-in");
+      }
+
+      const savedUser = localStorage.getItem("lemonUser");
+      if (savedUser) setLoggedInUser(savedUser);
+      loginBtn.addEventListener("click", () => {
+        if (loginBtn.classList.contains("logged-in")) {
+          localStorage.removeItem("lemonUser");
+          loginBtn.textContent = "Log In";
+          loginBtn.classList.remove("logged-in");
+          return;
+        }
+        loginModalOverlay.classList.add("open");
+      });
+      loginModalClose.addEventListener("click", () =>
+        loginModalOverlay.classList.remove("open"),
+      );
+      loginModalOverlay.addEventListener("click", (e) => {
+        if (e.target === loginModalOverlay)
+          loginModalOverlay.classList.remove("open");
+      });
+
+      emailLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("loginName").value.trim();
+        if (!name) return;
+        setLoggedInUser(name);
+        loginModalOverlay.classList.remove("open");
+      });
+
+      googleLoginBtn.addEventListener("click", () => {
+        setLoggedInUser("Google User");
+        loginModalOverlay.classList.remove("open");
+      });
+      githubLoginBtn.addEventListener("click", () => {
+        setLoggedInUser("GitHub User");
+        loginModalOverlay.classList.remove("open");
+      });
+    </script>
+    <script>
+      // Generate particles
+      const container = document.getElementById("heroParticles");
+      if (container) {
+        for (let i = 0; i < 40; i++) {
+          const p = document.createElement("div");
+          p.className = "particle";
+          p.style.left = Math.random() * 100 + "%";
+          p.style.animationDuration = Math.random() * 8 + 6 + "s";
+          p.style.animationDelay = Math.random() * 8 + "s";
+          p.style.width = p.style.height = Math.random() * 3 + 1 + "px";
+          p.style.opacity = Math.random() * 0.6 + 0.2;
+          container.appendChild(p);
+        }
+      }
+    </script>
   </body>
 </html>

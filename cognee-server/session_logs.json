@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1,
+    "text": "Fixed JWT authentication bug in auth.js, token was expiring too early after 1 hour, used Claude AI prompt to debug, increased JWT expiry to 7 days",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-04T21:14:04.914603",
+    "is_bug": true,
+    "is_prompt": true,
+    "files": []
+  },
+  {
+    "id": 2,
+    "text": "Switched from OpenAI to Ollama for 100% free local AI, installed llama3.2 and nomic-embed-text models, no more API costs",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-04T21:14:13.016078",
+    "is_bug": false,
+    "is_prompt": true,
+    "files": []
+  },
+  {
+    "id": 3,
+    "text": "Built the Lemon dashboard frontend using Node.js Express, created dark theme UI with gold accent colors matching Figma design",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-04T21:14:21.975240",
+    "is_bug": false,
+    "is_prompt": false,
+    "files": [
+      "Node.js"
+    ]
+  },
+  {
+    "id": 4,
+    "text": "Fixed Cognee recall bug, SearchType argument order was wrong, query_text should come first before SearchType parameter",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-04T21:14:31.158498",
+    "is_bug": true,
+    "is_prompt": false,
+    "files": []
+  },
+  {
+    "id": 5,
+    "text": "Integrated GitHub API to fetch real repo data, stars, description and last push date now showing on dashboard",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-04T21:14:39.447101",
+    "is_bug": false,
+    "is_prompt": false,
+    "files": []
+  }
+]
