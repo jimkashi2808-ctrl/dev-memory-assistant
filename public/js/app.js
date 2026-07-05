@@ -21,12 +21,25 @@ async function analyzeProject() {
   document.querySelector(".project-head p").textContent =
     "Fetching project data...";
 
-  // Fetch real GitHub data
+  // Fetch real logs for accurate counts
+  try {
+    const logsRes = await fetch("/api/logs");
+    const logsData = await logsRes.json();
+    document.getElementById("statCommits").textContent = logsData.total || 0;
+    document.getElementById("statBugs").textContent = logsData.bugs || 0;
+    document.getElementById("statPrompts").textContent = logsData.prompts || 0;
+    document.getElementById("statModules").textContent = (
+      logsData.files || []
+    ).length;
+  } catch (e) {
+    console.error("Logs fetch failed:", e);
+  }
+
+  // Fetch GitHub data
   if (isGithubUrl) {
     try {
       const ghRes = await fetch(`/api/github?url=${encodeURIComponent(input)}`);
       const ghData = await ghRes.json();
-      console.log("GitHub data:", ghData);
       if (!ghData.error) {
         document.getElementById("projectName").textContent =
           ghData.full_name || projectName;
@@ -35,19 +48,14 @@ async function analyzeProject() {
         document.getElementById("lastBuild").textContent =
           `📅 ${new Date(ghData.pushed_at).toLocaleDateString()}`;
         document.querySelector(".project-head p").textContent =
-          ghData.description || "No description provided";
-        document.getElementById("statCommits").textContent =
-          ghData.open_issues_count || 0;
-        document.getElementById("statModules").textContent =
-          ghData.forks_count || 0;
+          ghData.description || "No description";
       }
     } catch (err) {
       console.error("GitHub fetch failed:", err);
-      document.getElementById("launchDate").textContent = "GitHub fetch failed";
     }
   }
 
-  // Always query Cognee memory
+  // Query memory
   try {
     const res = await fetch("/api/recall", {
       method: "POST",
@@ -57,15 +65,32 @@ async function analyzeProject() {
       }),
     });
     const data = await res.json();
-    console.log("Memory results:", data);
-    renderResults(projectName, data.results || []);
+    renderBugList(data.results || []);
   } catch (err) {
-    console.error("Memory recall failed:", err);
     document.getElementById("launchDate").textContent =
       "Could not reach memory server";
   }
 }
 
+function renderBugList(results) {
+  const bugList = document.getElementById("bugList");
+  if (results.length === 0) {
+    bugList.innerHTML =
+      '<div class="bug-row empty">No memory found — log a session first</div>';
+    return;
+  }
+  bugList.innerHTML = results
+    .slice(0, 8)
+    .map(
+      (r, i) => `
+    <div class="bug-row">
+      <span><span class="bug-id">#${(i + 1).toString().padStart(3, "0")}</span>${truncate(cleanResult(r), 55)}</span>
+      <span class="bug-tag fixed">Logged</span>
+    </div>
+  `,
+    )
+    .join("");
+}
 function renderResults(projectName, results) {
   document.getElementById("statBugs").textContent = results.filter((r) =>
     /bug|fix|error/i.test(r),
@@ -73,6 +98,7 @@ function renderResults(projectName, results) {
   document.getElementById("statPrompts").textContent = results.filter((r) =>
     /prompt|gpt|claude|ai/i.test(r),
   ).length;
+  // ... rest
 
   const bugList = document.getElementById("bugList");
   if (results.length === 0) {
@@ -252,11 +278,16 @@ async function loadRecentSessions() {
 }
 
 async function deleteSession(id) {
+  if (!confirm("Delete this session?")) return;
   try {
     const res = await fetch(`/api/delete/${id}`, { method: "DELETE" });
     const data = await res.json();
-    if (data.status === "deleted") loadRecentSessions();
-  } catch {
-    alert("Could not delete session");
+    if (data.status === "deleted") {
+      loadRecentSessions();
+    } else {
+      alert("Session not found");
+    }
+  } catch (err) {
+    alert("Could not delete — make sure both servers are running");
   }
 }

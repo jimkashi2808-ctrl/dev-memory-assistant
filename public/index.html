@@ -881,25 +881,34 @@
         aiChatLog.innerHTML += `<div class="msg user">${question}</div>`;
         aiQuestionInput.value = "";
 
-        const thinkingId = "aiThinking_" + Date.now();
-        aiChatLog.innerHTML += `<div class="msg ai" id="${thinkingId}">Thinking...</div>`;
+        const thinkingId = "think_" + Date.now();
+        aiChatLog.innerHTML += `<div class="msg ai" id="${thinkingId}">Searching memory...</div>`;
         aiChatLog.scrollTop = aiChatLog.scrollHeight;
 
         try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 8000);
+
           const res = await fetch("/api/recall", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ question }),
+            signal: controller.signal,
           });
+          clearTimeout(timeout);
           const data = await res.json();
           const answer =
             data.results && data.results.length > 0
-              ? data.results[0]
-              : "No memory found. Try logging a session first.";
+              ? data.results
+                  .map((r) => r.replace(/[\[\]{}'"]/g, ""))
+                  .join("\n\n")
+              : "No memory found for that query. Try logging more sessions first.";
           document.getElementById(thinkingId).textContent = answer;
         } catch (err) {
           document.getElementById(thinkingId).textContent =
-            "Could not reach memory server.";
+            err.name === "AbortError"
+              ? "Memory search timed out. Your sessions are saved — try a simpler question."
+              : "Could not reach memory server.";
         }
         aiChatLog.scrollTop = aiChatLog.scrollHeight;
       });

@@ -1,59 +1,74 @@
 [
   {
     "id": 1,
-    "text": "Fixed JWT authentication bug in auth.js, token was expiring too early after 1 hour, used Claude AI prompt to debug, increased JWT expiry to 7 days",
+    "text": "Fixed JWT authentication bug in auth.js",
     "dataset": "lemon",
     "type": "session",
     "tags": [],
-    "timestamp": "2026-07-04T21:14:04.914603",
+    "timestamp": "2026-07-05T13:58:45.696986",
     "is_bug": true,
-    "is_prompt": true,
-    "files": []
-  },
-  {
-    "id": 2,
-    "text": "Switched from OpenAI to Ollama for 100% free local AI, installed llama3.2 and nomic-embed-text models, no more API costs",
-    "dataset": "lemon",
-    "type": "session",
-    "tags": [],
-    "timestamp": "2026-07-04T21:14:13.016078",
-    "is_bug": false,
-    "is_prompt": true,
-    "files": []
-  },
-  {
-    "id": 3,
-    "text": "Built the Lemon dashboard frontend using Node.js Express, created dark theme UI with gold accent colors matching Figma design",
-    "dataset": "lemon",
-    "type": "session",
-    "tags": [],
-    "timestamp": "2026-07-04T21:14:21.975240",
-    "is_bug": false,
     "is_prompt": false,
     "files": [
-      "Node.js"
+      "auth.js"
     ]
   },
   {
-    "id": 4,
-    "text": "Fixed Cognee recall bug, SearchType argument order was wrong, query_text should come first before SearchType parameter",
+    "id": 2,
+    "text": "Fixed JWT authentication bug in auth.js",
     "dataset": "lemon",
     "type": "session",
     "tags": [],
-    "timestamp": "2026-07-04T21:14:31.158498",
+    "timestamp": "2026-07-05T13:58:59.883910",
     "is_bug": true,
+    "is_prompt": false,
+    "files": [
+      "auth.js"
+    ]
+  },
+  {
+    "id": 3,
+    "text": "Built dark theme dashboard UI with gold accent color",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-05T13:59:10.276984",
+    "is_bug": false,
+    "is_prompt": false,
+    "files": []
+  },
+  {
+    "id": 4,
+    "text": "Integrated GitHub API to fetch real repo stars and description",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-05T13:59:21.624567",
+    "is_bug": false,
     "is_prompt": false,
     "files": []
   },
   {
     "id": 5,
-    "text": "Integrated GitHub API to fetch real repo data, stars, description and last push date now showing on dashboard",
+    "text": "Fixed CSS layout issue in analytics.html frontend file",
     "dataset": "lemon",
     "type": "session",
     "tags": [],
-    "timestamp": "2026-07-04T21:14:39.447101",
-    "is_bug": false,
+    "timestamp": "2026-07-05T13:59:34.255083",
+    "is_bug": true,
     "is_prompt": false,
+    "files": [
+      "analytics.html"
+    ]
+  },
+  {
+    "id": 6,
+    "text": "Used Claude AI prompt to fix the bug, asked ChatGPT for CSS help, used AI tools throughout development",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-05T15:22:35.810738",
+    "is_bug": true,
+    "is_prompt": true,
     "files": []
   }
 ]

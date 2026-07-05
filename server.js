@@ -113,6 +113,16 @@ app.delete("/api/delete/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to delete session" });
   }
 });
+app.delete("/api/delete/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const response = await axios.delete(`${COGNEE_URL}/delete/${id}`);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Delete error:", error.message);
+    res.status(500).json({ error: "Failed to delete session" });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Dev Memory Assistant running on http://localhost:${PORT}`);
 });
