@@ -70,5 +70,16 @@
     "is_bug": true,
     "is_prompt": true,
     "files": []
+  },
+  {
+    "id": 7,
+    "text": "i just fixed a race condition in token refresh",
+    "dataset": "lemon",
+    "type": "session",
+    "tags": [],
+    "timestamp": "2026-07-05T15:59:37.815629",
+    "is_bug": true,
+    "is_prompt": false,
+    "files": []
   }
 ]
